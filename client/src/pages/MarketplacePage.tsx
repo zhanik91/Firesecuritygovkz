@@ -84,11 +84,11 @@ export default function MarketplacePage() {
   });
 
   // Transform the joined data to match the Ad interface
-  const ads: Ad[] = adsData.map(item => ({
+  const ads: Ad[] = Array.isArray(adsData) ? adsData.map(item => ({
     ...item.ads,
     category: item.ad_categories,
     user: item.users
-  }));
+  })) : [];
 
   const cities = [
     'Алматы',
