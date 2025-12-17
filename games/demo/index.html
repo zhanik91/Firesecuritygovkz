@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Демо Игры - Fire Safety KZ</title>
+  <link rel="stylesheet" href="/games/css/demo-game.css" />
+</head>
+<body>
+  <div class="demo-container">
+    <header class="demo-header">
+      <h1 id="gameTitle">Загрузка игры...</h1>
+      <button class="close-btn" onclick="parent.closeGameModal()">&times;</button>
+    </header>
+    
+    <main class="demo-content">
+      <div class="game-placeholder" id="gameContent">
+        <!-- Контент игры будет загружен здесь -->
+      </div>
+      
+      <div class="demo-controls">
+        <button id="startBtn" class="demo-btn primary">Начать</button>
+        <button id="resetBtn" class="demo-btn secondary">Сначала</button>
+        <div class="score-display">
+          Счет: <span id="scoreValue">0</span>/100
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script src="/games/js/demo-game.js"></script>
+</body>
+</html>

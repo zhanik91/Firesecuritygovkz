@@ -1,0 +1,346 @@
+/* Единый стиль печати для всех компонентов */
+
+@media print {
+  /* Общие настройки */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    font-family: 'Times New Roman', serif !important;
+    background: white !important;
+    color: #000 !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    padding: 20px !important;
+  }
+
+  /* Скрыть элементы интерфейса */
+  .no-print,
+  .btn,
+  .button,
+  nav,
+  .navigation,
+  .sidebar,
+  .header-actions,
+  .back-button,
+  .edit-button,
+  .delete-button,
+  button:not(.print-button),
+  .toast,
+  .alert,
+  .modal,
+  .dropdown {
+    display: none !important;
+  }
+
+  /* Заголовки */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    font-weight: bold !important;
+    page-break-after: avoid !important;
+  }
+
+  h1 {
+    font-size: 24px !important;
+    text-align: center !important;
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 10px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+    border-bottom: 1px solid #000 !important;
+    padding-bottom: 5px !important;
+  }
+
+  h3 {
+    font-size: 18px !important;
+  }
+
+  /* Параграфы и текст */
+  p {
+    margin: 10px 0 !important;
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+
+  /* Ссылки */
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  a:after {
+    content: " (" attr(href) ")" !important;
+    font-style: italic !important;
+    font-size: 0.8em !important;
+  }
+
+  /* Таблицы */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 20px 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    padding: 8px !important;
+    text-align: left !important;
+    vertical-align: top !important;
+  }
+
+  th {
+    background-color: #f0f0f0 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  /* Калькуляторы */
+  .calculator-container {
+    page-break-inside: avoid !important;
+    margin-bottom: 30px !important;
+  }
+
+  .calculator-title {
+    font-size: 22px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 20px !important;
+    border: 2px solid #000 !important;
+    padding: 10px !important;
+  }
+
+  .calculator-input-section {
+    margin-bottom: 20px !important;
+    border: 1px solid #ccc !important;
+    padding: 15px !important;
+  }
+
+  .calculator-result {
+    background: #f9f9f9 !important;
+    border: 2px solid #000 !important;
+    padding: 15px !important;
+    margin: 20px 0 !important;
+    font-weight: bold !important;
+  }
+
+  .calculator-recommendation {
+    background: #fff !important;
+    border: 1px solid #666 !important;
+    padding: 10px !important;
+    margin: 10px 0 !important;
+    font-style: italic !important;
+  }
+
+  .normative-reference {
+    font-size: 12px !important;
+    color: #666 !important;
+    margin-top: 10px !important;
+    font-style: italic !important;
+  }
+
+  /* Формы */
+  .form-group {
+    margin-bottom: 15px !important;
+  }
+
+  .form-label {
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+  }
+
+  .form-input {
+    border: 1px solid #000 !important;
+    padding: 5px !important;
+    background: white !important;
+    color: #000 !important;
+  }
+
+  /* Карточки и блоки */
+  .card {
+    border: 1px solid #000 !important;
+    margin-bottom: 20px !important;
+    padding: 15px !important;
+    page-break-inside: avoid !important;
+  }
+
+  .card-header {
+    border-bottom: 1px solid #ccc !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  /* Объявления */
+  .ad-card {
+    border: 1px solid #000 !important;
+    margin-bottom: 20px !important;
+    padding: 15px !important;
+    page-break-inside: avoid !important;
+  }
+
+  .ad-title {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    margin-bottom: 10px !important;
+  }
+
+  .ad-company {
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+  }
+
+  .ad-description {
+    margin: 10px 0 !important;
+  }
+
+  .ad-details {
+    border-top: 1px solid #ccc !important;
+    padding-top: 10px !important;
+    margin-top: 10px !important;
+    font-size: 14px !important;
+  }
+
+  /* Профиль пользователя */
+  .user-profile {
+    page-break-inside: avoid !important;
+  }
+
+  .user-avatar {
+    display: none !important;
+  }
+
+  .user-name {
+    font-size: 20px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  .user-stats {
+    border: 1px solid #000 !important;
+    padding: 15px !important;
+    margin: 20px 0 !important;
+  }
+
+  /* Статистика */
+  .stats-grid {
+    display: block !important;
+  }
+
+  .stat-card {
+    border: 1px solid #000 !important;
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+    text-align: center !important;
+  }
+
+  .stat-value {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    display: block !important;
+  }
+
+  .stat-label {
+    font-size: 14px !important;
+    display: block !important;
+  }
+
+  /* Списки */
+  ul, ol {
+    margin: 10px 0 !important;
+    padding-left: 30px !important;
+  }
+
+  li {
+    margin-bottom: 5px !important;
+  }
+
+  /* Разрыв страниц */
+  .page-break {
+    page-break-before: always !important;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+  }
+
+  /* Колонтитулы */
+  @page {
+    margin: 2cm;
+    @top-center {
+      content: "NewsFire - Портал пожарной безопасности Казахстана";
+      font-size: 12px;
+      color: #666;
+    }
+    @bottom-center {
+      content: "Страница " counter(page) " из " counter(pages);
+      font-size: 12px;
+      color: #666;
+    }
+  }
+
+  /* Водяной знак */
+  .print-watermark:before {
+    content: "НЕОФИЦИАЛЬНАЯ КОПИЯ";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 72px;
+    color: rgba(200, 200, 200, 0.3);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Специальные классы для печати */
+  .print-only {
+    display: block !important;
+  }
+
+  .print-signature-line {
+    border-bottom: 1px solid #000 !important;
+    width: 200px !important;
+    height: 20px !important;
+    margin: 30px 0 5px 0 !important;
+    display: inline-block !important;
+  }
+
+  .print-date {
+    margin-top: 30px !important;
+    text-align: right !important;
+  }
+
+  .print-company-stamp {
+    width: 150px !important;
+    height: 150px !important;
+    border: 1px dashed #666 !important;
+    margin: 20px auto !important;
+    text-align: center !important;
+    line-height: 150px !important;
+    font-style: italic !important;
+    color: #999 !important;
+  }
+}
+
+/* Специальные стили для предварительного просмотра печати */
+.print-preview {
+  max-width: 210mm !important;
+  background: white !important;
+  color: black !important;
+  font-family: 'Times New Roman', serif !important;
+  line-height: 1.4 !important;
+  padding: 20mm !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+}
+
+.print-preview .no-print {
+  display: none !important;
+}

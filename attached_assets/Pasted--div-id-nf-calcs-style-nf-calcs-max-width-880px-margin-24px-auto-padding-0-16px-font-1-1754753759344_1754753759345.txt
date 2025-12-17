@@ -1,0 +1,182 @@
+<div id="nf-calcs">
+  <style>
+    #nf-calcs{max-width:880px;margin:24px auto;padding:0 16px;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+    .card h3{margin:0 0 10px 0}
+    .grid{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}}
+    label{display:flex;flex-direction:column;gap:6px}
+    input,select{height:40px;border:1px solid #d5d5d5;border-radius:10px;padding:0 10px}
+    .check{flex-direction:row;align-items:center}
+    .btn{margin-top:10px;height:44px;padding:0 16px;border:0;border-radius:10px;background:#0b5cff;color:#fff;cursor:pointer}
+    .btn:hover{filter:brightness(.95)}
+    .result{margin-top:12px}
+    .muted{color:#666;font-size:12.5px}
+    details{margin-top:8px}
+  </style>
+
+  <!-- Калькулятор огнетушителей -->
+  <section class="card" id="calc-ext">
+    <h3>Калькулятор огнетушителей</h3>
+    <div class="grid">
+      <label>Площадь, м²
+        <input type="number" id="ext-area" min="0" step="1" placeholder="например, 250">
+      </label>
+      <label>Категория
+        <select id="ext-cat">
+          <option value="A">А (взрыво-/пожароопасная)</option>
+          <option value="Б">Б (взрыво-/пожароопасная)</option>
+          <option value="В">В (пожароопасная)</option>
+          <option value="Г">Г (умеренная опасность)</option>
+          <option value="Д">Д (пониженная опасность)</option>
+        </select>
+      </label>
+      <label>Этажей
+        <input type="number" id="ext-floors" min="1" step="1" value="1">
+      </label>
+      <label class="check"><input type="checkbox" id="ext-autoput"> Есть АУПТ (спринклер/газ)</label>
+      <label class="check"><input type="checkbox" id="ext-elec"> Есть электрооборудование под напряжением</label>
+    </div>
+    <button class="btn" onclick="calcExtinguishers()">Рассчитать</button>
+    <div class="result" id="ext-result"></div>
+    <details><summary>Нормативные примечания ⓘ</summary>
+      <ul class="muted">
+        <li id="ppa3p8">Мин. 2 ОТ на этаж (Прил. 3 ППБ РК).</li>
+        <li id="ppa3p9">Кат. Д ≤ 100 м² — допускается не устанавливать.</li>
+        <li id="ppa3p13">При АУПТ — можно сократить на 50%.</li>
+        <li id="ppa3p14">Макс. расстояния до ОТ: 20/30/40/70 м.</li>
+        <li id="st1487p85">Резерв при перезарядке (СТ РК 1487, п. 8.5).</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- Калькулятор НГПС -->
+  <section class="card" id="calc-ngps">
+    <h3>Калькулятор НГПС (негос. противопожарная служба)</h3>
+    <div class="grid">
+      <label>Отрасль/тип объекта
+        <select id="ngps-type">
+          <option value="прочее">Прочее производство</option>
+          <option value="нефтегаз">Нефтегаз / НПЗ / нефтебаза</option>
+          <option value="химия">Химическое производство</option>
+          <option value="энергетика">Энергетика (ТЭЦ/ПС)</option>
+          <option value="складГСМ">Склад ГСМ</option>
+          <option value="административный">Административный/торговый</option>
+        </select>
+      </label>
+      <label>Площадь опасных помещений, м²
+        <input type="number" id="ngps-area" min="0" step="1" placeholder="например, 5000">
+      </label>
+      <label>Категория помещений
+        <select id="ngps-cat">
+          <option value="A">А</option><option value="Б">Б</option>
+          <option value="В">В</option><option value="Г">Г</option><option value="Д">Д</option>
+        </select>
+      </label>
+      <label>Расстояние до ПЧ МЧС, км
+        <input type="number" id="ngps-dist" min="0" step="0.1" placeholder="например, 5">
+      </label>
+    </div>
+    <button class="btn" onclick="calcNGPS()">Проверить</button>
+    <div class="result" id="ngps-result"></div>
+    <details><summary>Нормативные примечания ⓘ</summary>
+      <ul class="muted">
+        <li id="pp1017p8">Перечень №1017, п. 8: S ≥ 3500 м² и D &gt; 3 км → НГПС обязательна.</li>
+        <li id="z53p5">Закон «О гражданской защите», ст. 53: оснащение/штат не ниже ГПС.</li>
+      </ul>
+    </details>
+  </section>
+
+  <script>
+    // ===== Константы для огнетушителей =====
+    const AREA_PER_OT = { 'A': 50, 'Б': 50, 'В': 100, 'Г': 200, 'Д': 300 }; // м² на 1 ОТ
+    const MIN_OT_PER_FLOOR = 2;
+    const THRESHOLD_WHEELED = 500; // м²
+    const HAS_AUTOPUT_FACTOR = 0.5; // -50%
+
+    function recommendTypes(hasElec, cat) {
+      const parts = [];
+      if (hasElec) parts.push('1–2 шт. CO₂ (ОУ‑5) для электро');
+      if (cat === 'A' || cat === 'Б' || cat === 'В') parts.push('основа — порошковые ОП‑5/ОП‑9 (ABC)');
+      if (cat === 'Г' || cat === 'Д') parts.push('подойдут универсальные ОП‑5');
+      return parts.length ? 'Рекомендуемые типы: ' + parts.join('; ') + '.' : '';
+    }
+
+    window.calcExtinguishers = function () {
+      const S = +document.getElementById('ext-area').value || 0;
+      const cat = document.getElementById('ext-cat').value;
+      const floors = Math.max(1, +document.getElementById('ext-floors').value || 1);
+      const hasAUTP = document.getElementById('ext-autoput').checked;
+      const hasElec = document.getElementById('ext-elec').checked;
+
+      // Особый случай: Д ≤ 100 м² — можно 0 шт.
+      if (cat === 'Д' && S <= 100) {
+        document.getElementById('ext-result').innerHTML =
+          '<p><b>Требуемое количество:</b> 0 шт.</p>' +
+          '<p>Допустимо не устанавливать (кат. Д ≤ 100 м²). <a href="#ppa3p9">См. примечание</a>.</p>';
+        return;
+      }
+
+      const areaPerOT = AREA_PER_OT[cat] || 100;
+      let qty = Math.ceil(S / areaPerOT);
+      const minByFloor = MIN_OT_PER_FLOOR * floors;
+      if (qty < minByFloor) qty = minByFloor;
+      if (hasAUTP) qty = Math.max(Math.ceil(qty * HAS_AUTOPUT_FACTOR), minByFloor);
+
+      const wheeled = S > THRESHOLD_WHEELED ? 'Также рекомендуется передвижной ОП‑25/ОП‑50 (тележка).' : '';
+      const types = recommendTypes(hasElec, cat);
+      const justification = [
+        '<a href="#ppa3p8">мин. 2 на этаж</a>',
+        hasAUTP ? '<a href="#ppa3p13">−50% при АУПТ</a>' : null,
+        '<a href="#ppa3p14">нормы расстояний</a>',
+        '<a href="#st1487p85">резерв на время ТО</a>'
+      ].filter(Boolean).join(' • ');
+
+      document.getElementById('ext-result').innerHTML =
+        `<p><b>Требуемое количество:</b> ${qty} шт.</p>
+         <p>${types} ${wheeled}</p>
+         <p class="muted">Обоснование: ${justification}.</p>`;
+    };
+
+    // ===== НГПС =====
+    const MANDATORY_INDUSTRIES = ['нефтегаз', 'химия', 'энергетика'];
+    const TECH_BASE = { 'нефтегаз': 2, 'химия': 2, 'энергетика': 1, 'складГСМ': 1, 'прочее': 1, 'административный': 0 };
+    function staffRange(numAuto){ if(numAuto<=0)return[8,10]; const min=12*numAuto+4,max=16*numAuto+5; return [min,max]; }
+
+    window.calcNGPS = function () {
+      const type = document.getElementById('ngps-type').value;
+      const area = +document.getElementById('ngps-area').value || 0;
+      const cat  = document.getElementById('ngps-cat').value;
+      const dist = +document.getElementById('ngps-dist').value || 0;
+
+      const isHazardCat = /^(A|Б|В)$/.test(cat);
+      const byList = MANDATORY_INDUSTRIES.includes(type);
+      const byRule = (isHazardCat && area >= 3500 && dist > 3);
+
+      let need=false, post=false, numAuto=0;
+      if(byList){ need=true; numAuto = TECH_BASE[type] || 1; }
+      else if(byRule){ need=true; numAuto = TECH_BASE[type] || 1; }
+      else if(dist>3){ post=true; }
+
+      if(need && area>10000 && numAuto<2) numAuto=2;
+
+      let html='';
+      if(need){
+        const [minS,maxS]=staffRange(numAuto);
+        const typeHint = type==='нефтегаз' ? ' (АЦ + пенная/порошковая)' :
+                         type==='химия' ? ' (АЦ + порошковая)' :
+                         (numAuto>0 ? ' (АЦ основная)' : '');
+        html = `<p><b>НГПС обязательна:</b> пожарная часть с ${numAuto} авто${typeHint}.</p>
+                <p><b>Ориентировочный штат:</b> ${minS}–${maxS} чел (круглосуточно).</p>
+                <p class="muted">Обоснование: <a href="#pp1017p8">Перечень №1017, п. 8</a>; <a href="#z53p5">Закон «О ГЗ», ст. 53</a>.</p>`;
+      } else if(post){
+        const [minS,maxS]=staffRange(0);
+        html = `<p><b>НГПС не обязательна.</b> Рекомендуется пожарный пост (без техники): ${minS}–${maxS} чел в штате.</p>
+                <p class="muted">Основание: удалённость &gt; 3 км — целесообразно усилить первую реакцию.</p>`;
+      } else {
+        html = `<p><b>НГПС не обязательна.</b> Достаточно мер общей ПБ и прикрытия ГПС.</p>`;
+      }
+      document.getElementById('ngps-result').innerHTML = html;
+    };
+  </script>
+</div>

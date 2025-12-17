@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Демо Игры - Fire Safety KZ</title>
+  <style>
+    :root {
+      --primary-red: #dc2626;
+      --success-green: #16a34a;
+      --warning-yellow: #eab308;
+      --text-primary: #1e293b;
+      --background: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .demo-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .demo-header {
+      background: var(--primary-red);
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .demo-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .demo-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+    }
+
+    .game-placeholder {
+      flex: 1;
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .demo-btn.primary {
+      background: var(--primary-red);
+      color: white;
+    }
+
+    .demo-btn.secondary {
+      background: #e2e8f0;
+      color: var(--text-primary);
+    }
+
+    .demo-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .demo-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .score-display {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-left: auto;
+    }
+
+    #scoreValue {
+      color: var(--success-green);
+      font-size: 1.2rem;
+    }
+
+    .pass-method-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .extinguisher-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .extinguisher {
+      width: 100px;
+      height: 200px;
+      background: #dc2626;
+      border-radius: 10px 10px 20px 20px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .extinguisher:hover {
+      transform: scale(1.05);
+    }
+
+    .extinguisher::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      right: 20px;
+      height: 20px;
+      background: #666;
+      border-radius: 5px;
+    }
+
+    .fire-simulation {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .fire {
+      width: 80px;
+      height: 100px;
+      background: linear-gradient(45deg, #ff6b00, #ff0000, #ffff00);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: flicker 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-2deg); }
+      100% { transform: scale(1.1) rotate(2deg); }
+    }
+
+    .step-indicator {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .step-active {
+      background: #dbeafe;
+      border: 2px solid #3b82f6;
+    }
+
+    @media (max-width: 768px) {
+      .pass-method-demo {
+        grid-template-columns: 1fr;
+      }
+      
+      .demo-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .demo-content {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <header class="demo-header">
+      <h1 id="gameTitle">Загрузка игры...</h1>
+      <button class="close-btn" onclick="window.close()">&times;</button>
+    </header>
+    
+    <main class="demo-content">
+      <div class="game-placeholder" id="gameContent">
+        <!-- Контент игры будет загружен здесь -->
+      </div>
+      
+      <div class="demo-controls">
+        <button id="startBtn" class="demo-btn primary">Начать</button>
+        <button id="resetBtn" class="demo-btn secondary">Сначала</button>
+        <div class="score-display">
+          Счет: <span id="scoreValue">0</span>/100
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    // Демо игры Fire Safety KZ
+    class DemoGame {
+      constructor() {
+        this.currentGame = this.getGameType();
+        this.score = 0;
+        this.gameStep = 0;
+        this.isPlaying = false;
+        this.init();
+      }
+
+      getGameType() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('game') || 'pass-method';
+      }
+
+      init() {
+        this.setupGame();
+        this.bindEvents();
+      }
+
+      setupGame() {
+        const gameTitle = document.getElementById('gameTitle');
+        const gameContent = document.getElementById('gameContent');
+        
+        const games = {
+          'pass-method': {
+            title: 'PASS Метод - Демо',
+            content: this.createPassMethodDemo()
+          },
+          'evacuation-plan': {
+            title: 'План Эвакуации - Демо',
+            content: this.createEvacuationDemo()
+          },
+          'inspector-violations': {
+            title: 'Инспектор - Демо',
+            content: this.createInspectorDemo()
+          },
+          'fire-systems': {
+            title: 'Системы Пожаротушения - Демо',
+            content: this.createSystemsDemo()
+          },
+          'first-aid': {
+            title: 'Первая Помощь - Демо',
+            content: this.createFirstAidDemo()
+          }
+        };
+
+        const game = games[this.currentGame];
+        if (game) {
+          gameTitle.textContent = game.title;
+          gameContent.innerHTML = game.content;
+        }
+      }
+
+      bindEvents() {
+        document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+        document.getElementById('resetBtn').addEventListener('click', () => this.resetGame());
+      }
+
+      startGame() {
+        this.isPlaying = true;
+        this.gameStep = 1;
+        this.updateUI();
+        
+        // Запускаем логику конкретной игры
+        switch(this.currentGame) {
+          case 'pass-method':
+            this.startPassMethod();
+            break;
+          case 'evacuation-plan':
+            this.startEvacuationPlan();
+            break;
+          default:
+            this.startGenericGame();
+        }
+      }
+
+      resetGame() {
+        this.score = 0;
+        this.gameStep = 0;
+        this.isPlaying = false;
+        this.updateUI();
+        this.setupGame();
+      }
+
+      updateUI() {
+        document.getElementById('scoreValue').textContent = this.score;
+        document.getElementById('startBtn').disabled = this.isPlaying;
+        document.getElementById('resetBtn').disabled = !this.isPlaying && this.score === 0;
+      }
+
+      addScore(points) {
+        this.score += points;
+        this.updateUI();
+        
+        if (this.score >= 80) {
+          setTimeout(() => {
+            alert(`Игра завершена! Ваш результат: ${this.score}/100`);
+          }, 1000);
+        }
+      }
+
+      // Демо PASS метода
+      createPassMethodDemo() {
+        return `
+          <div class="pass-method-demo">
+            <div class="extinguisher-container">
+              <div class="extinguisher" id="extinguisher"></div>
+              <div>Нажмите на огнетушитель</div>
+            </div>
+            <div class="fire-simulation">
+              <div class="fire" id="fire"></div>
+              <div class="step-indicator" id="stepIndicator">
+                Шаг 1: Pull (Выдерните чеку)
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      startPassMethod() {
+        const extinguisher = document.getElementById('extinguisher');
+        const fire = document.getElementById('fire');
+        const stepIndicator = document.getElementById('stepIndicator');
+        
+        const steps = [
+          'Pull (Выдерните чеку)',
+          'Aim (Направьте на основание огня)', 
+          'Squeeze (Нажмите рычаг)',
+          'Sweep (Водите из стороны в сторону)'
+        ];
+        
+        let currentStep = 0;
+        
+        extinguisher.addEventListener('click', () => {
+          if (!this.isPlaying) return;
+          
+          currentStep++;
+          this.addScore(20);
+          
+          if (currentStep < steps.length) {
+            stepIndicator.textContent = `Шаг ${currentStep + 1}: ${steps[currentStep]}`;
+            stepIndicator.classList.add('step-active');
+            
+            setTimeout(() => {
+              stepIndicator.classList.remove('step-active');
+            }, 1000);
+          } else {
+            stepIndicator.textContent = 'Огонь потушен! 🎉';
+            fire.style.display = 'none';
+            this.addScore(20);
+          }
+        });
+      }
+
+      createEvacuationDemo() {
+        return `
+          <div style="text-align: center;">
+            <h3>План Эвакуации - Демо Версия</h3>
+            <div style="margin: 2rem 0;">
+              <div style="width: 300px; height: 200px; border: 2px solid #ccc; margin: 0 auto; position: relative; background: #f9f9f9;">
+                <div style="position: absolute; top: 20px; left: 20px; width: 60px; height: 40px; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">Огонь</div>
+                <div style="position: absolute; bottom: 20px; right: 20px; width: 60px; height: 40px; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">Выход</div>
+              </div>
+              <p style="margin-top: 1rem;">Нажмите "Начать", чтобы построить маршрут эвакуации</p>
+            </div>
+          </div>
+        `;
+      }
+
+      createInspectorDemo() {
+        return `
+          <div style="text-align: center;">
+            <h3>Найдите нарушения пожарной безопасности</h3>
+            <div style="margin: 2rem 0;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 400px; margin: 0 auto;">
+                <div class="violation-item" data-violation="blocked-exit" style="padding: 1rem; border: 2px solid #ccc; cursor: pointer; border-radius: 8px;">
+                  <div style="font-size: 2rem;">🚪📦</div>
+                  <div>Заблокированный выход</div>
+                </div>
+                <div class="violation-item" data-violation="no-extinguisher" style="padding: 1rem; border: 2px solid #ccc; cursor: pointer; border-radius: 8px;">
+                  <div style="font-size: 2rem;">❌🧯</div>
+                  <div>Нет огнетушителя</div>
+                </div>
+              </div>
+              <p style="margin-top: 1rem;">Нажмите на нарушения, чтобы их отметить</p>
+            </div>
+          </div>
+        `;
+      }
+
+      createSystemsDemo() {
+        return `
+          <div style="text-align: center;">
+            <h3>Системы Пожаротушения</h3>
+            <div style="margin: 2rem 0;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 400px; margin: 0 auto;">
+                <div style="padding: 1rem; background: #f1f5f9; border-radius: 8px;">
+                  <div style="font-size: 2rem;">🚰</div>
+                  <div>Спринклерная система</div>
+                </div>
+                <div style="padding: 1rem; background: #f1f5f9; border-radius: 8px;">
+                  <div style="font-size: 2rem;">💨</div>
+                  <div>Газовая система</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      createFirstAidDemo() {
+        return `
+          <div style="text-align: center;">
+            <h3>Первая Помощь при Пожаре</h3>
+            <div style="margin: 2rem 0;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🚑</div>
+              <div style="max-width: 300px; margin: 0 auto; text-align: left;">
+                <p><strong>При ожогах:</strong></p>
+                <ul>
+                  <li>Охладить водой</li>
+                  <li>Наложить стерильную повязку</li>
+                  <li>Вызвать скорую</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      startGenericGame() {
+        const violations = document.querySelectorAll('.violation-item');
+        violations.forEach(item => {
+          item.addEventListener('click', () => {
+            if (!this.isPlaying) return;
+            
+            item.style.borderColor = '#16a34a';
+            item.style.backgroundColor = '#dcfce7';
+            this.addScore(40);
+          });
+        });
+      }
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+      new DemoGame();
+    });
+  </script>
+</body>
+</html>

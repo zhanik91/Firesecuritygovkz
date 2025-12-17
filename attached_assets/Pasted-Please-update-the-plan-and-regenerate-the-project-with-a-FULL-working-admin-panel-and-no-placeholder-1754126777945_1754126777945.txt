@@ -1,0 +1,48 @@
+Please update the plan and regenerate the project with a FULL working admin panel and no placeholders.
+
+PROJECT INFO
+• Repo / slug: fire_safety_kz
+• Brand: FIRE SAFETY KZ
+• Default locale ru, secondary kk, TZ Asia/Almaty.
+
+TECH STACK
+• React 18 + Vite (frontend)
+• Express + TypeScript (backend API)
+• Prisma + SQLite (database file in /data)
+• TailwindCSS + shadcn/ui
+• JWT auth (email + password) with role-based access (admin, user)
+• Express-session for refresh tokens; bcrypt for password hashing.
+
+DATABASE SCHEMA
+Author, User {id, email, passwordHash, role}, Post, Category, Tag, PostTag, Document {id, title, fileUrl, year, type}, Schedule {id, title, date, note}, Comment.
+
+FEATURES (PUBLIC)
+1. Home page: hero slider, latest posts, sidebar widgets, light/dark toggle.
+2. News list (infinite scroll), category pages, tag pages.
+3. Article page (MDX), view counter, related posts, comments (moderated).
+4. Normative Docs: filter by year/type, download/view PDF.
+5. Calculators: fire-risk index, extinguisher quantity estimator (live forms).
+6. Schedule: upcoming inspections & duty roster (table + calendar view).
+7. Search with instant suggestions, RSS, sitemap, PWA + WebPush (demo keys).
+
+ADMIN PANEL (`/admin`)
+• Login page (email/password, JWT stored in HTTP-only cookies).
+• Dashboard overview.
+• CRUD sections:
+  – Posts (create/edit MDX with live preview).  
+  – Categories & Tags.  
+  – Documents (upload PDF, edit meta).  
+  – Schedule events.  
+  – Users (create admin, reset password).  
+• File uploads saved to `/public/uploads` with unique names.
+• UI: shadcn/ui Table + Dialog forms, toast notifications.
+
+ROUTES / API
+• `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`.
+• CRUD REST routes under `/api/admin/*` protected by JWT verify + role check.
+
+SEED SCRIPT
+• Create default admin user (`admin@firesafety.kz` / `Admin123!`).
+• 20 demo posts (RU), 6 categories, 20 tags, 10 documents (dummy PDFs), 10 schedule events.
+
+README

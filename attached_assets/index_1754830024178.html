@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Угадай картинку: Пожарная безопасность</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #e63946;
+            margin-bottom: 10px;
+        }
+        .category-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .category-btn {
+            padding: 15px 25px;
+            font-size: 16px;
+            background-color: #a8dadc;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        .category-btn:hover {
+            background-color: #457b9d;
+            color: white;
+        }
+        .game-container {
+            display: none;
+            text-align: center;
+        }
+        .question-container {
+            background-color: #f1faee;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .image-container {
+            margin: 20px 0;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #a8dadc;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option-btn:hover {
+            background-color: #457b9d;
+            color: white;
+        }
+        .hint-btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            background-color: #e9c46a;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        .hint-btn:hover {
+            background-color: #f4a261;
+        }
+        .hint-text {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            display: none;
+        }
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        .progress-text {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #e63946;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .score-container {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .result-container {
+            display: none;
+            text-align: center;
+            background-color: #f1faee;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .result-container h2 {
+            color: #e63946;
+        }
+        .restart-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #e63946;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        .restart-btn:hover {
+            background-color: #c1121f;
+        }
+        .correct {
+            background-color: #80b918 !important;
+            color: white !important;
+        }
+        .incorrect {
+            background-color: #e63946 !important;
+            color: white !important;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .category-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            .image-container {
+                height: 200px;
+            }
+            .option-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Угадай картинку: Пожарная безопасность</h1>
+            <p>Выберите категорию, соответствующую вашему уровню знаний:</p>
+        </div>
+        
+        <div class="category-selection">
+            <button class="category-btn" onclick="selectCategory('children')">Для детей (5-8 лет)</button>
+            <button class="category-btn" onclick="selectCategory('school')">Для школьников (9-14 лет)</button>
+            <button class="category-btn" onclick="selectCategory('responsible')">Для ответственных за пожарную безопасность</button>
+            <button class="category-btn" onclick="selectCategory('professional')">Для профессиональных пожарных</button>
+        </div>
+        
+        <div id="gameContainer" class="game-container">
+            <div class="progress-container">
+                <div class="progress-text">Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">7</span></div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="score-container">
+                Счет: <span id="score">0</span>
+            </div>
+            
+            <div class="question-container">
+                <div id="questionText" class="question-text"></div>
+                <div class="image-container">
+                    <img id="questionImage" src="" alt="Изображение для вопроса">
+                </div>
+                <div id="optionsContainer" class="options-container">
+                    <!-- Варианты ответов будут добавлены динамически -->
+                </div>
+                <button id="hintBtn" class="hint-btn" onclick="showHint()">Подсказка (осталось: <span id="hintsLeft">3</span>)</button>
+                <div id="hintText" class="hint-text"></div>
+            </div>
+        </div>
+        
+        <div id="resultContainer" class="result-container">
+            <h2>Результаты</h2>
+            <p>Вы ответили правильно на <span id="correctAnswers">0</span> из <span id="totalQuestionsResult">7</span> вопросов.</p>
+            <p>Ваш итоговый счет: <span id="finalScore">0</span></p>
+            <button class="restart-btn" onclick="restartGame()">Начать заново</button>
+        </div>
+    </div>
+
+    <script>
+        // Данные для игры
+        const gameData = {
+            children: {
+                questions: [
+                    {
+                        text: "Что это за машина?",
+                        image: "images/children_fire_truck.jpg",
+                        options: ["Пожарная машина", "Скорая помощь", "Полицейская машина"],
+                        correctAnswer: 0,
+                        hint: "Эта машина красного цвета и используется для тушения пожаров."
+                    },
+                    {
+                        text: "Что это за предмет?",
+                        image: "images/children_fire_extinguisher.jpg",
+                        options: ["Огнетушитель", "Пылесос", "Баллон с водой"],
+                        correctAnswer: 0,
+                        hint: "Этот предмет используется для тушения небольших пожаров."
+                    },
+                    {
+                        text: "Кто это?",
+                        image: "images/children_firefighter.jpg",
+                        options: ["Пожарный", "Полицейский", "Врач"],
+                        correctAnswer: 0,
+                        hint: "Этот человек спасает людей из горящих зданий."
+                    },
+                    {
+                        text: "Что это за знак?",
+                        image: "images/children_exit_sign.jpg",
+                        options: ["Знак 'Выход'", "Знак 'Вход'", "Знак 'Стоп'"],
+                        correctAnswer: 0,
+                        hint: "Этот знак показывает, куда нужно идти, чтобы выйти из здания в случае пожара."
+                    },
+                    {
+                        text: "Что это за номер телефона для вызова пожарных?",
+                        image: "images/children_emergency_number.jpg",
+                        options: ["01 (101, 112)", "02 (102)", "03 (103)"],
+                        correctAnswer: 0,
+                        hint: "По этому номеру вызывают пожарных в случае пожара."
+                    },
+                    {
+                        text: "Что это за предмет?",
+                        image: "images/children_fire_hose.jpg",
+                        options: ["Пожарный рукав", "Садовый шланг", "Веревка"],
+                        correctAnswer: 0,
+                        hint: "Через этот предмет пожарные подают воду для тушения пожара."
+                    },
+                    {
+                        text: "Что это за устройство на потолке?",
+                        image: "images/children_smoke_detector.jpg",
+                        options: ["Датчик дыма", "Лампочка", "Вентилятор"],
+                        correctAnswer: 0,
+                        hint: "Это устройство издает громкий звук, когда в комнате появляется дым."
+                    }
+                ]
+            },
+            school: {
+                questions: [
+                    {
+                        text: "Какой знак пожарной безопасности изображен на картинке?",
+                        image: "images/school_fire_safety_signs.jpg",
+                        options: ["Знак 'Огнетушитель'", "Знак 'Пожарный кран'", "Знак 'Выход'"],
+                        correctAnswer: 0,
+                        hint: "Этот знак указывает на место расположения огнетушителя."
+                    },
+                    {
+                        text: "Какой класс пожара обозначен на этой маркировке огнетушителя?",
+                        image: "images/school_fire_classes.jpg",
+                        options: ["Класс A (твердые горючие вещества)", "Класс B (горючие жидкости)", "Класс C (горючие газы)"],
+                        correctAnswer: 0,
+                        hint: "Этот класс пожара относится к горению твердых веществ, таких как дерево, бумага, ткань."
+                    },
+                    {
+                        text: "Что изображено на картинке?",
+                        image: "images/school_fire_evacuation_plan.jpg",
+                        options: ["План эвакуации при пожаре", "Карта города", "Схема метро"],
+                        correctAnswer: 0,
+                        hint: "Этот план показывает, как безопасно покинуть здание в случае пожара."
+                    },
+                    {
+                        text: "Какой метод самоспасения при возгорании одежды показан на картинке?",
+                        image: "images/school_stop_drop_roll.jpg",
+                        options: ["Остановись, упади, катайся", "Беги и прыгай", "Стой и кричи"],
+                        correctAnswer: 0,
+                        hint: "Этот метод помогает потушить горящую на человеке одежду."
+                    },
+                    {
+                        text: "Что изображено на картинке?",
+                        image: "images/school_fire_extinguisher_use.jpg",
+                        options: ["Инструкция по использованию огнетушителя", "Инструкция по сборке мебели", "Правила дорожного движения"],
+                        correctAnswer: 0,
+                        hint: "Эта инструкция показывает, как правильно использовать огнетушитель при пожаре."
+                    },
+                    {
+                        text: "Что изображено на картинке?",
+                        image: "images/school_fire_alarm_button.jpg",
+                        options: ["Кнопка пожарной сигнализации", "Кнопка вызова лифта", "Кнопка звонка"],
+                        correctAnswer: 0,
+                        hint: "Эту кнопку нажимают для активации пожарной тревоги в здании."
+                    },
+                    {
+                        text: "Что изображено на картинке?",
+                        image: "images/school_fire_blanket.jpg",
+                        options: ["Противопожарное одеяло", "Обычное одеяло", "Коврик для йоги"],
+                        correctAnswer: 0,
+                        hint: "Этим предметом можно накрыть небольшой пожар, чтобы перекрыть доступ кислорода."
+                    }
+                ]
+            },
+            responsible: {
+                questions: [
+                    {
+                        text: "Какой тип огнетушителя изображен на картинке?",
+                        image: "images/professional_fire_extinguisher_types.jpg",
+                        options: ["Порошковый огнетушитель", "Углекислотный огнетушитель", "Водный огнетушитель"],
+                        correctAnswer: 0,
+                        hint: "Этот тип огнетушителя содержит сухой химический порошок и подходит для тушения пожаров классов A, B и C."
+                    },
+                    {
+                        text: "Какой элемент системы пожарной сигнализации изображен на картинке?",
+                        image: "images/professional_fire_alarm_system.jpg",
+                        options: ["Контрольная панель", "Датчик движения", "Камера видеонаблюдения"],
+                        correctAnswer: 0,
+                        hint: "Этот элемент является центральным устройством управления системой пожарной сигнализации."
+                    },
+                    {
+                        text: "Что изображено на картинке?",
+                        image: "images/professional_fire_escape_plan.jpg",
+                        options: ["План эвакуации при пожаре", "План размещения мебели", "Архитектурный план здания"],
+                        correctAnswer: 0,
+                        hint: "Этот план показывает пути эвакуации и расположение противопожарного оборудования в здании."
+                    },
+                    {
+                        text: "Какой элемент противопожарной защиты изображен на картинке?",
+                        image: "images/professional_fire_door.jpg",
+                        options: ["Противопожарная дверь", "Обычная межкомнатная дверь", "Входная дверь"],
+                        correctAnswer: 0,
+                        hint: "Этот элемент предназначен для предотвращения распространения огня и дыма между помещениями."
+                    },
+                    {
+                        text: "Какой тип пожарного рукава изображен на картинке?",
+                        image: "images/professional_fire_hose_types.jpg",
+                        options: ["Прорезиненный пожарный рукав", "Напорно-всасывающий рукав", "Рукав для бытового использования"],
+                        correctAnswer: 0,
+                        hint: "Этот тип рукава имеет резиновое покрытие и используется для подачи воды под давлением."
+                    },
+                    {
+                        text: "Какой элемент системы пожаротушения изображен на картинке?",
+                        image: "images/professional_fire_sprinkler_system.jpg",
+                        options: ["Спринклерная головка", "Датчик дыма", "Вентиляционная решетка"],
+                        correctAnswer: 0,
+                        hint: "Этот элемент автоматически распыляет воду при достижении определенной температуры."
+                    },
+                    {
+                        text: "Что изображено на картинке?",
+                        image: "images/professional_fire_hydrant_system.jpg",
+                        options: ["Пожарный гидрант", "Водопроводный кран", "Газовый клапан"],
+                        correctAnswer: 0,
+                        hint: "Это устройство обеспечивает доступ к водопроводной системе для пожарных машин."
+                    }
+                ]
+            },
+            professional: {
+                questions: [
+                    {
+                        text: "Какой тип системы пожаротушения изображен на схеме?",
+                        image: "images/professional_fire_sprinkler_system.jpg",
+                        options: ["Спринклерная система", "Дренчерная система", "Система газового пожаротушения"],
+                        correctAnswer: 0,
+                        hint: "Эта система использует термочувствительные элементы для автоматического срабатывания отдельных оросителей."
+                    },
+                    {
+                        text: "Какой класс пожара НЕ может тушить углекислотный огнетушитель, изображенный на схеме?",
+                        image: "images/professional_fire_extinguisher_types.jpg",
+                        options: ["Класс A (твердые горючие вещества)", "Класс E (электрооборудование)", "Класс D (металлы)"],
+                        correctAnswer: 0,
+                        hint: "Углекислотные огнетушители неэффективны для тушения пожаров, связанных с горением твердых материалов, таких как дерево или бумага."
+                    },
+                    {
+                        text: "Какой тип противопожарной двери изображен на схеме?",
+                        image: "images/professional_fire_door.jpg",
+                        options: ["Дверь с пределом огнестойкости EI60", "Дымонепроницаемая дверь", "Противопожарная дверь с остеклением"],
+                        correctAnswer: 0,
+                        hint: "Маркировка EI60 означает, что дверь сохраняет целостность и теплоизолирующую способность в течение 60 минут при пожаре."
+                    },
+                    {
+                        text: "Какой компонент системы пожарной сигнализации отсутствует на схеме?",
+                        image: "images/professional_fire_alarm_system.jpg",
+                        options: ["Звуковой оповещатель", "Ручной извещатель", "Дымовой извещатель"],
+                        correctAnswer: 0,
+                        hint: "На схеме представлены контрольная панель, дымовые извещатели и ручные извещатели, но отсутствуют устройства звукового оповещения."
+                    },
+                    {
+                        text: "Какой максимальный радиус обслуживания пожарного гидранта в городских условиях согласно нормативам?",
+                        image: "images/professional_fire_hydrant_system.jpg",
+                        options: ["150 метров", "200 метров", "100 метров"],
+                        correctAnswer: 0,
+                        hint: "Согласно СП 8.13130, радиус обслуживания пожарного гидранта в городских условиях не должен превышать 150 метров."
+                    },
+                    {
+                        text: "Какой тип пожарного рукава имеет наибольшее рабочее давление согласно схеме?",
+                        image: "images/professional_fire_hose_types.jpg",
+                        options: ["Напорный рукав повышенной прочности", "Прорезиненный напорный рукав", "Напорно-всасывающий рукав"],
+                        correctAnswer: 0,
+                        hint: "Напорные рукава повышенной прочности рассчитаны на рабочее давление до 3,0 МПа."
+                    },
+                    {
+                        text: "Какой минимальный предел огнестойкости должны иметь несущие конструкции здания I степени огнестойкости?",
+                        image: "images/professional_fire_escape_plan.jpg",
+                        options: ["R 120", "R 90", "R 60"],
+                        correctAnswer: 0,
+                        hint: "Согласно Федеральному закону №123-ФЗ, несущие конструкции зданий I степени огнестойкости должны иметь предел огнестойкости не менее R 120."
+                    }
+                ]
+            }
+        };
+
+        let currentCategory = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let hintsLeft = 3;
+        let correctAnswers = 0;
+
+        // Функция выбора категории
+        function selectCategory(category) {
+            currentCategory = category;
+            currentQuestionIndex = 0;
+            score = 0;
+            hintsLeft = 3;
+            correctAnswers = 0;
+            
+            document.querySelector('.category-selection').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            
+            document.getElementById('hintsLeft').textContent = hintsLeft;
+            document.getElementById('score').textContent = score;
+            document.getElementById('totalQuestions').textContent = gameData[category].questions.length;
+            
+            loadQuestion();
+        }
+
+        // Функция загрузки вопроса
+        function loadQuestion() {
+            const question = gameData[currentCategory].questions[currentQuestionIndex];
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('questionText').textContent = question.text;
+            document.getElementById('questionImage').src = question.image;
+            document.getElementById('hintText').style.display = 'none';
+            
+            // Обновление прогресс-бара
+            const progressPercentage = ((currentQuestionIndex) / gameData[currentCategory].questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+            
+            // Очистка и добавление вариантов ответов
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Функция проверки ответа
+        function checkAnswer(selectedIndex) {
+            const question = gameData[currentCategory].questions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            // Блокировка кнопок после ответа
+            optionButtons.forEach(button => {
+                button.disabled = true;
+            });
+            
+            // Подсветка правильного и неправильного ответов
+            optionButtons[question.correctAnswer].classList.add('correct');
+            
+            if (selectedIndex !== question.correctAnswer) {
+                optionButtons[selectedIndex].classList.add('incorrect');
+            } else {
+                // Если ответ правильный
+                score += 10;
+                correctAnswers++;
+                document.getElementById('score').textContent = score;
+            }
+            
+            // Переход к следующему вопросу через 1.5 секунды
+            setTimeout(() => {
+                currentQuestionIndex++;
+                
+                if (currentQuestionIndex < gameData[currentCategory].questions.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1500);
+        }
+
+        // Функция показа подсказки
+        function showHint() {
+            if (hintsLeft > 0) {
+                hintsLeft--;
+                document.getElementById('hintsLeft').textContent = hintsLeft;
+                
+                const hintText = document.getElementById('hintText');
+                hintText.textContent = gameData[currentCategory].questions[currentQuestionIndex].hint;
+                hintText.style.display = 'block';
+                
+                if (hintsLeft === 0) {
+                    document.getElementById('hintBtn').disabled = true;
+                }
+            }
+        }
+
+        // Функция показа результатов
+        function showResults() {
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('totalQuestionsResult').textContent = gameData[currentCategory].questions.length;
+            document.getElementById('finalScore').textContent = score;
+        }
+
+        // Функция перезапуска игры
+        function restartGame() {
+            document.querySelector('.category-selection').style.display = 'flex';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('hintBtn').disabled = false;
+        }
+    </script>
+</body>
+</html>

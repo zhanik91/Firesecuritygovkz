@@ -1,0 +1,28 @@
+
+{
+  "name": "Fire Safety KZ - Обучающие Игры",
+  "short_name": "FireSafety Games",
+  "description": "Интерактивные обучающие игры по пожарной безопасности для Казахстана",
+  "start_url": "/games/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "categories": ["education", "games"],
+  "lang": "ru",
+  "scope": "/games/",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjZGMyNjI2Ii8+CjxwYXRoIGQ9Ik05NiAzMkM3OC4zIDMyIDY0IDQ2LjMgNjQgNjRWMTI4QzY0IDE0NS43IDc4LjMgMTYwIDk2IDE2MFMxMjggMTQ1LjcgMTI4IDEyOFY2NEMxMjggNDYuMyAxMTMuNyAzMiA5NiAzMloiIGZpbGw9IiNmZmZmZmYiLz4KPC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjZGMyNjI2Ii8+CjxwYXRoIGQ9Ik0yNTYgODZDMjA4LjggODYgMTcxIDEyMy44IDE3MSAxNzFWMzQxQzE3MSAzODguMiAyMDguOCA0MjYgMjU2IDQyNlMzNDEgMzg4LjIgMzQxIDM0MVYxNzFDMzQxIDEyMy44IDMwMy4yIDg2IDI1NiA4NloiIGZpbGw9IiNmZmZmZmYiLz4KPC9zdmc+",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

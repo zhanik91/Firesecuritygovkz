@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькуляторы ПБ РК: Огнетушители и НГПС — с методичкой</title>
+<style>
+  :root{--fg:#111;--muted:#666;--bg:#fff;--line:#e6e6e6;--brand:#0b5cff;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+  h1,h2,h3{line-height:1.2;margin:0 0 10px}
+  h1{font-size:24px;margin-top:6px}
+  h2{font-size:18px;margin-top:24px}
+  h3{font-size:16px;margin-top:18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+  .grid{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  label{display:flex;flex-direction:column;gap:6px}
+  input,select{height:40px;border:1px solid #d5d5d5;border-radius:10px;padding:0 10px}
+  .check{flex-direction:row;align-items:center}
+  .btn{margin-top:10px;height:44px;padding:0 16px;border:0;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer}
+  .btn:hover{filter:brightness(.95)}
+  .result{margin-top:12px}
+  .muted{color:var(--muted);font-size:12.5px}
+  details{margin-top:8px}
+  .notes ul{margin:6px 0 0 18px;padding:0}
+  .notes li{margin:4px 0}
+  .anchor{scroll-margin-top:80px}
+  .toc a{color:var(--brand);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .kbd{font:12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;background:#f6f7fb;border:1px solid #dfe3f0;border-radius:6px;padding:2px 6px}
+  .sep{height:1px;background:var(--line);margin:24px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="card">
+    <h1>Калькуляторы ПБ РК: Огнетушители и НГПС</h1>
+    <p class="muted">Онлайн‑расчёт по Правилам пожарной безопасности РК (ППБ 2022), СТ РК 1487‑2006 и Постановлению Правительства №1017. Внизу страницы — методичка с пояснениями и якорями; нажимайте на значки ⓘ или ссылки, чтобы перейти к обоснованию.</p>
+  </header>
+
+  <!-- Калькулятор огнетушителей -->
+  <section class="card" id="calc-ext">
+    <h2>Калькулятор огнетушителей</h2>
+    <div class="grid">
+      <label>Площадь, м²
+        <input type="number" id="ext-area" min="0" step="1" placeholder="например, 250">
+      </label>
+      <label>Категория
+        <select id="ext-cat">
+          <option value="A">А (взрыво-/пожароопасная)</option>
+          <option value="Б">Б (взрыво-/пожароопасная)</option>
+          <option value="В">В (пожароопасная)</option>
+          <option value="Г">Г (умеренная опасность)</option>
+          <option value="Д">Д (пониженная опасность)</option>
+        </select>
+      </label>
+      <label>Этажей
+        <input type="number" id="ext-floors" min="1" step="1" value="1">
+      </label>
+      <label class="check"><input type="checkbox" id="ext-autoput"> Есть АУПТ (спринклер/газ)</label>
+      <label class="check"><input type="checkbox" id="ext-elec"> Есть электрооборудование под напряжением</label>
+    </div>
+    <button class="btn" onclick="calcExtinguishers()">Рассчитать</button>
+    <div class="result" id="ext-result"></div>
+    <details class="notes">
+      <summary>Нормативные примечания ⓘ</summary>
+      <ul class="muted">
+        <li id="ppa3p8"><a class="toc" href="#m-ppa3p8">Мин. 2 ОТ на этаж</a> — Прил. 3 ППБ РК.</li>
+        <li id="ppa3p9"><a class="toc" href="#m-ppa3p9">Кат. Д ≤ 100 м²</a> — допускается не устанавливать.</li>
+        <li id="ppa3p13"><a class="toc" href="#m-ppa3p13">АУПТ: −50%</a> от расчётного количества.</li>
+        <li id="ppa3p14"><a class="toc" href="#m-ppa3p14">Макс. расстояния</a> до ОТ: 20/30/40/70 м.</li>
+        <li id="st1487p85"><a class="toc" href="#m-st1487p85">Резерв</a> при перезарядке (СТ РК 1487, п. 8.5).</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- Калькулятор НГПС -->
+  <section class="card" id="calc-ngps">
+    <h2>Калькулятор НГПС (негос. противопожарная служба)</h2>
+    <div class="grid">
+      <label>Отрасль/тип объекта
+        <select id="ngps-type">
+          <option value="прочее">Прочее производство</option>
+          <option value="нефтегаз">Нефтегаз / НПЗ / нефтебаза</option>
+          <option value="химия">Химическое производство</option>
+          <option value="энергетика">Энергетика (ТЭЦ/ПС)</option>
+          <option value="складГСМ">Склад ГСМ</option>
+          <option value="административный">Административный/торговый</option>
+        </select>
+      </label>
+      <label>Площадь опасных помещений, м²
+        <input type="number" id="ngps-area" min="0" step="1" placeholder="например, 5000">
+      </label>
+      <label>Категория помещений
+        <select id="ngps-cat">
+          <option value="A">А</option><option value="Б">Б</option>
+          <option value="В">В</option><option value="Г">Г</option><option value="Д">Д</option>
+        </select>
+      </label>
+      <label>Расстояние до ПЧ МЧС, км
+        <input type="number" id="ngps-dist" min="0" step="0.1" placeholder="например, 5">
+      </label>
+    </div>
+    <button class="btn" onclick="calcNGPS()">Проверить</button>
+    <div class="result" id="ngps-result"></div>
+    <details class="notes">
+      <summary>Нормативные примечания ⓘ</summary>
+      <ul class="muted">
+        <li id="pp1017p8"><a class="toc" href="#m-pp1017p8">Перечень №1017, п. 8</a>: S ≥ 3500 м² и D &gt; 3 км → НГПС обязательна.</li>
+        <li id="z53p5"><a class="toc" href="#m-z53">Закон «О гражданской защите», ст. 53</a>: оснащение/штат не ниже ГПС.</li>
+      </ul>
+    </details>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- МЕТОДИЧКА -->
+  <section class="card" id="methodic">
+    <h2>Методичка (Пояснения и ссылки)</h2>
+
+    <h3>1. Нормативные документы</h3>
+    <ul>
+      <li>Правила пожарной безопасности РК, 2022 (ППБ, Приказ МЧС №55 от 21.02.2022), <strong>Приложение 3</strong>.</li>
+      <li>СТ РК 1487‑2006 «Техника пожарная. Огнетушители. Требования к эксплуатации».</li>
+      <li>СП РК 2.02‑101‑2022 (категории A/Б/В/Г/Д; функциональные классы).</li>
+      <li>Постановление Правительства РК №1017 от 25.09.2014 (перечень объектов с обязательной НГПС).</li>
+      <li>Закон РК «О гражданской защите», ст. 53 (требования к НГПС).</li>
+    </ul>
+
+    <h3>2. Огнетушители — алгоритм и ключевые правила</h3>
+    <p>Шаги: определить категорию помещения (A/Б/В/Г/Д) и классы пожара; рассчитать базовое число по площади; учесть минимумы и послабления; выбрать тип/массу и места установки; проверить расстояния; учесть резерв и обслуживание.</p>
+    <ul>
+      <li class="anchor" id="m-ppa3p8"><strong>Минимум 2 переносных огнетушителя на каждом этаже</strong> общественных/производственных зданий (ППБ, Прил. 3).</li>
+      <li class="anchor" id="m-ppa3p9"><strong>Категория Д ≤ 100 м²</strong> — <em>допускается не устанавливать</em> (исключение из Прил. 3).</li>
+      <li class="anchor" id="m-ppa3p13"><strong>При наличии АУПТ</strong> — <em>можно сократить на 50%</em> от расчётного количества (Прил. 3), но не ниже поэтажного минимума.</li>
+      <li class="anchor" id="m-ppa3p14"><strong>Макс. расстояния до ближайшего ОТ</strong>: 20 м (общественные), 30 м (кат. A/Б/В), 40 м (кат. Г), 70 м (кат. Д).</li>
+      <li><strong>Передвижные ОТ</strong> (ОП‑25/50 на тележке) — рекомендовать при общей площади &gt; 500 м² или риск крупных очагов.</li>
+      <li class="anchor" id="m-st1487p85"><strong>Резерв на время ТО/перезарядки</strong>: выведенные ОТ заменяются заряженными резервными (СТ РК 1487, п. 8.5). Практика: держать запас ~10% парка или по одному на группу.</li>
+      <li><strong>Тип ОТ</strong>: универсальная база — порошковые АВС (ОП‑5/9). Для электрооборудования — CO₂ (ОУ‑5/8) или хладоновые. Водные/пенные — только при отсутствии напряжения.</li>
+    </ul>
+
+    <h3>3. НГПС — когда обязательна и как считать</h3>
+    <ul>
+      <li class="anchor" id="m-pp1017p8"><strong>Перечень №1017, п. 8</strong>: для предприятий с пожаро-/взрывоопасными помещениями категорий A/Б/В <em>суммарной площадью ≥ 3500 м²</em> и <em>при удалённости &gt; 3 км</em> от ближайшей ПЧ — требуется НГПС с выездной техникой.</li>
+      <li><strong>Отрасли повышенного риска</strong> (нефтегаз, химия, крупная энергетика и др.) — НГПС обязательна независимо от расстояния (по перечню).</li>
+      <li class="anchor" id="m-z53"><strong>Закон «О ГЗ», ст. 53</strong>: НГПС по оснащению/штатам не ниже норм ГПС; допускается договор с аккредитованной НГПС.</li>
+      <li><strong>Виды подразделений</strong>: пожарная часть (с техникой) или пожарный пост (без техники). Пост целесообразен при &lt; 3500 м² и большой удалённости.</li>
+      <li><strong>Оценка численности</strong> (ориентир): 1 авто → ~15–18 чел; 2 авто → ~24–30 чел; 3 авто → 40+ чел (круглосуточно).</li>
+    </ul>
+
+    <h3>4. Примеры</h3>
+    <ul>
+      <li><strong>Офис 250 м², кат. В, без АУПТ</strong> → ≈ 3 ОП‑5; расстояние ≤ 20 м.</li>
+      <li><strong>Склад Б 600 м²</strong> → ≈ 12 ОТ + рекомендовать ОП‑25/50.</li>
+      <li><strong>Цех В 1200 м² с АУПТ</strong> → базово 12, с −50% = 6 шт., но ≥ 2/этаж.</li>
+      <li><strong>НГПС: прочее, 4000 м², В, 5 км</strong> → НГПС обязательна: 1 АЦ, штат ~16–18 чел.</li>
+    </ul>
+
+    <p class="muted">Пояснение: калькуляторы дают ориентировочный нормативный результат. Окончательное решение — по проектной документации и согласованию с органами ЧС.</p>
+  </section>
+
+</div>
+
+<script>
+  // ===== НОРМЫ ДЛЯ ОГНЕТУШИТЕЛЕЙ =====
+  const AREA_PER_OT = { 'A': 50, 'Б': 50, 'В': 100, 'Г': 200, 'Д': 300 }; // м² на 1 ОТ
+  const MIN_OT_PER_FLOOR = 2;
+  const THRESHOLD_WHEELED = 500; // м²
+  const HAS_AUTOPUT_FACTOR = 0.5; // -50%
+
+  function recommendTypes(hasElec, cat) {
+    const parts = [];
+    if (hasElec) parts.push('1–2 шт. CO₂ (ОУ‑5) для электро');
+    if (cat === 'A' || cat === 'Б' || cat === 'В') parts.push('основа — порошковые ОП‑5/ОП‑9 (ABC)');
+    if (cat === 'Г' || cat === 'Д') parts.push('подойдут универсальные ОП‑5');
+    return parts.length ? 'Рекомендуемые типы: ' + parts.join('; ') + '.' : '';
+  }
+
+  function calcExtinguishers() {
+    const S = +document.getElementById('ext-area').value || 0;
+    const cat = document.getElementById('ext-cat').value;
+    const floors = Math.max(1, +document.getElementById('ext-floors').value || 1);
+    const hasAUTP = document.getElementById('ext-autoput').checked;
+    const hasElec = document.getElementById('ext-elec').checked;
+
+    if (cat === 'Д' && S <= 100) {
+      document.getElementById('ext-result').innerHTML =
+        '<p><b>Требуемое количество:</b> 0 шт.</p>' +
+        '<p>Допустимо не устанавливать (кат. Д ≤ 100 м²). <a href="#m-ppa3p9">См. примечание</a>.</p>';
+      return;
+    }
+
+    const areaPerOT = AREA_PER_OT[cat] || 100;
+    let qty = Math.ceil(S / areaPerOT);
+    const minByFloor = MIN_OT_PER_FLOOR * floors;
+    if (qty < minByFloor) qty = minByFloor;
+    if (hasAUTP) qty = Math.max(Math.ceil(qty * HAS_AUTOPUT_FACTOR), minByFloor);
+
+    const wheeled = S > THRESHOLD_WHEELED ? 'Также рекомендуется передвижной ОП‑25/ОП‑50 (тележка).' : '';
+    const types = recommendTypes(hasElec, cat);
+    const justification = [
+      '<a href="#m-ppa3p8">мин. 2 на этаж</a>',
+      hasAUTP ? '<a href="#m-ppa3p13">−50% при АУПТ</a>' : null,
+      '<a href="#m-ppa3p14">нормы расстояний</a>',
+      '<a href="#m-st1487p85">резерв на время ТО</a>'
+    ].filter(Boolean).join(' • ');
+
+    document.getElementById('ext-result').innerHTML =
+      `<p><b>Требуемое количество:</b> ${qty} шт.</p>
+       <p>${types} ${wheeled}</p>
+       <p class="muted">Обоснование: ${justification}.</p>`;
+  }
+  window.calcExtinguishers = calcExtinguishers;
+
+  // ===== НГПС =====
+  const MANDATORY_INDUSTRIES = ['нефтегаз', 'химия', 'энергетика'];
+  const TECH_BASE = { 'нефтегаз': 2, 'химия': 2, 'энергетика': 1, 'складГСМ': 1, 'прочее': 1, 'административный': 0 };
+  function staffRange(numAuto){ if(numAuto<=0)return[8,10]; const min=12*numAuto+4,max=16*numAuto+5; return [min,max]; }
+
+  function calcNGPS() {
+    const type = document.getElementById('ngps-type').value;
+    const area = +document.getElementById('ngps-area').value || 0;
+    const cat  = document.getElementById('ngps-cat').value;
+    const dist = +document.getElementById('ngps-dist').value || 0;
+
+    const isHazardCat = /^(A|Б|В)$/.test(cat);
+    const byList = MANDATORY_INDUSTRIES.includes(type);
+    const byRule = (isHazardCat && area >= 3500 && dist > 3);
+
+    let need=false, post=false, numAuto=0;
+    if(byList){ need=true; numAuto = TECH_BASE[type] || 1; }
+    else if(byRule){ need=true; numAuto = TECH_BASE[type] || 1; }
+    else if(dist>3){ post=true; }
+
+    if(need && area>10000 && numAuto<2) numAuto=2;
+
+    let html='';
+    if(need){
+      const [minS,maxS]=staffRange(numAuto);
+      const typeHint = type==='нефтегаз' ? ' (АЦ + пенная/порошковая)' :
+                       type==='химия' ? ' (АЦ + порошковая)' :
+                       (numAuto>0 ? ' (АЦ основная)' : '');
+      html = `<p><b>НГПС обязательна:</b> пожарная часть с ${numAuto} авто${typeHint}.</p>
+              <p><b>Ориентировочный штат:</b> ${minS}–${maxS} чел (круглосуточно).</p>
+              <p class="muted">Обоснование: <a href="#m-pp1017p8">Перечень №1017, п. 8</a>; <a href="#m-z53">Закон «О ГЗ», ст. 53</a>.</p>`;
+    } else if(post){
+      const [minS,maxS]=staffRange(0);
+      html = `<p><b>НГПС не обязательна.</b> Рекомендуется пожарный пост (без техники): ${minS}–${maxS} чел в штате.</p>
+              <p class="muted">Основание: удалённость &gt; 3 км — целесообразно усилить первую реакцию.</p>`;
+    } else {
+      html = `<p><b>НГПС не обязательна.</b> Достаточно мер общей ПБ и прикрытия ГПС.</p>`;
+    }
+    document.getElementById('ngps-result').innerHTML = html;
+  }
+  window.calcNGPS = calcNGPS;
+</script>
+</body>
+</html>

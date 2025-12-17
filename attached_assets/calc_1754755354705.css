@@ -1,0 +1,13 @@
+.calc-section { margin: 32px auto; max-width: 880px; padding: 0 16px; }
+.card { background: #fff; border: 1px solid #e6e6e6; border-radius: 16px; padding: 20px; box-shadow: 0 4px 14px rgba(0,0,0,.04); }
+.card h3 { margin: 0 0 12px; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+input, select { height: 40px; padding: 0 10px; border: 1px solid #d5d5d5; border-radius: 10px; }
+.check { flex-direction: row; align-items: center; gap: 10px; }
+.btn { margin-top: 10px; height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: #0066ff; color: #fff; cursor: pointer; }
+.btn:hover { filter: brightness(0.95); }
+.result { margin-top: 14px; line-height: 1.5; }
+.muted { color: #666; font-size: 13px; }
+.notes { margin-top: 8px; font-size: 13px; }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }

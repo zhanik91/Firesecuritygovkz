@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивные Игры - Fire Safety KZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .game-image {
+            height: 200px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .game-content {
+            padding: 2rem;
+        }
+
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #dc2626;
+        }
+
+        .game-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .game-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature {
+            background: #f3f4f6;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .game-btn {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .game-btn:hover {
+            background: #b91c1c;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            transition: background 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .game-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Вернуться на главную</a>
+        
+        <header class="header">
+            <h1>Интерактивные Игры</h1>
+            <p>Обучающие тренажеры по пожарной безопасности</p>
+        </header>
+
+        <main class="games-grid">
+            <!-- Игра 1: Угадай картинку -->
+            <article class="game-card">
+                <div class="game-image">🖼️</div>
+                <div class="game-content">
+                    <h2 class="game-title">Угадай картинку</h2>
+                    <p class="game-description">Проверьте свои знания пожарной безопасности с помощью интерактивной игры. Вопросы для всех уровней подготовки.</p>
+                    <div class="game-features">
+                        <span class="feature">🎯 4 уровня сложности</span>
+                        <span class="feature">⏱️ 5-10 минут</span>
+                        <span class="feature">💡 Система подсказок</span>
+                    </div>
+                    <button class="game-btn" onclick="window.location.href='/games/guess-image'">
+                        Играть
+                    </button>
+                </div>
+            </article>
+
+            <!-- Игра 2: PASS Метод -->
+            <article class="game-card">
+                <div class="game-image">🧯</div>
+                <div class="game-content">
+                    <h2 class="game-title">PASS Метод</h2>
+                    <p class="game-description">Изучите правильную технику использования огнетушителя по методу PASS.</p>
+                    <div class="game-features">
+                        <span class="feature">🎯 Практика</span>
+                        <span class="feature">⏱️ 5-10 минут</span>
+                        <span class="feature">📊 Система очков</span>
+                    </div>
+                    <button class="game-btn" onclick="window.open('demo.html?game=pass-method', '_blank')">
+                        Играть (Демо)
+                    </button>
+                </div>
+            </article>
+
+            <!-- Игра 3: План эвакуации -->
+            <article class="game-card">
+                <div class="game-image">🚪</div>
+                <div class="game-content">
+                    <h2 class="game-title">План Эвакуации</h2>
+                    <p class="game-description">Создайте правильный план эвакуации для различных типов зданий.</p>
+                    <div class="game-features">
+                        <span class="feature">🏢 Разные здания</span>
+                        <span class="feature">⏱️ 10-15 минут</span>
+                        <span class="feature">📋 Проверка знаний</span>
+                    </div>
+                    <button class="game-btn" onclick="window.open('demo.html?game=evacuation-plan', '_blank')">
+                        Играть (Демо)
+                    </button>
+                </div>
+            </article>
+
+            <!-- Игра 4: Инспектор -->
+            <article class="game-card">
+                <div class="game-image">🔍</div>
+                <div class="game-content">
+                    <h2 class="game-title">Инспектор: Найди Нарушение</h2>
+                    <p class="game-description">Проведите инспекцию и найдите нарушения пожарной безопасности.</p>
+                    <div class="game-features">
+                        <span class="feature">🔍 Детальная инспекция</span>
+                        <span class="feature">⏱️ 15-20 минут</span>
+                        <span class="feature">📚 База знаний НПА</span>
+                    </div>
+                    <button class="game-btn" onclick="window.open('demo.html?game=inspector-violations', '_blank')">
+                        Играть (Демо)
+                    </button>
+                </div>
+            </article>
+
+            <!-- Игра 5: Системы пожаротушения -->
+            <article class="game-card">
+                <div class="game-image">🚰</div>
+                <div class="game-content">
+                    <h2 class="game-title">Системы Пожаротушения</h2>
+                    <p class="game-description">Изучите принципы работы различных систем пожаротушения.</p>
+                    <div class="game-features">
+                        <span class="feature">⚡ Разные системы</span>
+                        <span class="feature">⏱️ 8-12 минут</span>
+                        <span class="feature">🔧 Техническая симуляция</span>
+                    </div>
+                    <button class="game-btn" onclick="window.open('demo.html?game=fire-systems', '_blank')">
+                        Скоро
+                    </button>
+                </div>
+            </article>
+
+            <!-- Игра 6: Первая помощь -->
+            <article class="game-card">
+                <div class="game-image">🚑</div>
+                <div class="game-content">
+                    <h2 class="game-title">Первая Помощь при Пожаре</h2>
+                    <p class="game-description">Научитесь оказывать первую помощь пострадавшим при пожаре.</p>
+                    <div class="game-features">
+                        <span class="feature">🏥 Медицинская помощь</span>
+                        <span class="feature">⏱️ 6-10 минут</span>
+                        <span class="feature">📋 Алгоритмы действий</span>
+                    </div>
+                    <button class="game-btn" onclick="window.open('demo.html?game=first-aid', '_blank')">
+                        Скоро
+                    </button>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+</html>

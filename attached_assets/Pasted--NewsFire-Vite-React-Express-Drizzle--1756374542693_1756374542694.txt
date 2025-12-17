@@ -1,0 +1,349 @@
+Название задачи:
+Аудит и безопасная стабилизация проекта NewsFire (Vite + React + Express, Drizzle), публикация на Replit Autoscale.
+
+Цели:
+
+Надёжный запуск в Replit (dev и autoscale) на $PORT (по умолчанию 5000).
+
+Комплексный аудит и точечные правки: конфигурация Replit, безопасность (helmet/cors/sessions), БД-драйвер (Neon/pg), SEO-базис, производительность изображений, каркас тестов, i18n-подход.
+
+Ничего не ломать по бизнес-логике. Любое изменение — только если польза > риск.
+
+Политика выполнения (очень важно)
+
+Сначала подумай — потом меняй. Перед каждым изменением:
+
+Оценка выгоды/риска/обратимости.
+
+Проверка совместимости (сборка, типы, импорты).
+
+Если есть сомнения или риск разрушения логики — НЕ ВНОСИТЬ, только зафиксировать в отчёте.
+
+Микро-коммиты: один дефект → один коммит с понятным сообщением.
+
+Резервная ветка: fix/replit-stabilization. Не мержить в main автоматически.
+
+Сборка/запуск после каждого важного изменения.
+
+Dev/Prod: поведение в dev (npm run dev) не должно ломать prod (npm run start).
+
+Не менять бизнес-логику и UI-потоки. Только инфраструктура/безопасность/стабильность/мета.
+
+Приёмка (критерии успеха)
+
+npm ci && npm run build — проходит без ошибок.
+
+npm run dev — сервер слушает $PORT и отдаёт клиент.
+
+Autoscale Deploy: билд/ран — без падений.
+
+БД: проект способен работать как с Neon (по умолчанию), так и с pg (локальный Postgres), в зависимости от DATABASE_DRIVER.
+
+Базовые заголовки безопасности включены; cookie настроены корректно для прод.
+
+Базовый SEO в index.html, ленивые изображения на ключевых узлах.
+
+Есть каркас unit-тестов (Vitest) и smoke-тест проходит.
+
+Итоговый отчёт с перечнем дефектов, диффами и командами проверки.
+
+Порядок работ для агента
+Шаг 0. Подготовка
+
+Создай ветку: git checkout -b fix/replit-stabilization.
+
+Сделай инвентаризацию: распечатай список ключевых файлов:
+
+.replit, replit.nix, package.json, package-lock.json, vite.config.ts, tsconfig.json, tailwind.config.ts, postcss.config.js, client/index.html, server/index.ts, server/routes.ts, server/db.ts, server/replitAuth.ts, server/storage.ts, public/robots.txt, public/sitemap.xml.
+
+Выполни предаудит: npm ci && npm run build (фиксируй ошибки/предупреждения).
+
+Если .replit невалиден (обрывки/«…»/некорректный TOML) — не правь сразу, сначала сформируй краткую записку: почему это мешает, чем грозит, что предлагаем заменить, и только после самооценки применяй правку.
+
+Шаг 1. Конфигурация Replit
+
+1.1. Проверка .replit
+
+Если файл содержит невалидные фрагменты (..., обрывы строк) — заменить на безопасный минималистичный вариант (см. ниже), но только после самопроверки (валидный TOML, корректные run/build, ориентация на $PORT):
+
+Рекомендуемый .replit (заменить целиком, если текущий невалиден):
+
+modules = ["nodejs-20", "web"]
+run = "npm run dev"
+hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["unzip"]
+
+[env]
+PORT = "5000"
+
+[deployment]
+deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
+run = ["npm", "run", "start"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+preview = true
+
+
+Коммит: fix(replit): replace invalid .replit with valid minimal config.
+
+Пост-проверка: replit.nix наличие/валидность → к следующему пункту.
+
+1.2. Если replit.nix отсутствует — добавить:
+
+{ pkgs }: {
+  deps = [
+    pkgs.nodejs_20
+    pkgs.nodePackages.npm
+    pkgs.unzip
+  ];
+}
+
+
+Коммит: chore(replit): add replit.nix with Node.js 20.
+
+Шаг 2. Безопасность HTTP и сессий
+
+2.1. server/index.ts — добавить helmet, cors, trust proxy
+
+Перед изменением убедись, что импортов ранее нет.
+
+Изменение (вставить импорты + мидлвары сразу после const app = express();):
+
+import helmet from "helmet";
+import cors from "cors";
+
+// ...
+const app = express();
+app.set('trust proxy', 1);
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+app.use(cors({
+  origin: process.env.CORS_ORIGINS?.split(',').map(s=>s.trim()).filter(Boolean) || true,
+  credentials: true
+}));
+
+
+Коммит: feat(security): add helmet/cors and trust proxy.
+
+2.2. server/routes.ts — куки сессии
+
+Найди конфиг express-session и измени cookie:
+
+cookie: {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+},
+
+
+Коммит: fix(session): set secure/sameSite for production.
+
+2.3. Удалить опасный импорт replitAuth (если не используется)
+
+Если import { setupAuth } from "./replitAuth"; есть и вызова нет — удалить импорт (чтобы не падать при отсутствии REPLIT_DOMAINS).
+
+Коммит: chore(auth): remove unused replitAuth import to prevent init crash.
+
+Шаг 3. База данных: Neon + локальный pg
+
+3.1. server/db.ts — поддержка обоих драйверов
+
+Заменить тело модуля на условную инициализацию по DATABASE_DRIVER (neon/pg).
+
+Только после самопроверки типов и сборки.
+
+Рекомендуемый вариант (server/db.ts):
+
+import { drizzle } from 'drizzle-orm';
+import * as schema from "@shared/schema";
+
+const DRIVER = (process.env.DATABASE_DRIVER || '').toLowerCase(); // 'neon' | 'pg'
+let db: any;
+
+if (DRIVER === 'pg' || process.env.DATABASE_URL?.includes('localhost') || process.env.DATABASE_URL?.includes('127.0.0.1')) {
+  const { Pool } = await import('pg');
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  db = drizzle(pool, { schema });
+} else {
+  const { Pool, neonConfig } = await import('@neondatabase/serverless');
+  const ws = (await import('ws')).default;
+  neonConfig.webSocketConstructor = ws;
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  db = drizzle({ client: pool, schema });
+}
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
+}
+
+export { db };
+
+
+Коммит: feat(db): add conditional driver (neon/pg).
+
+3.2. package.json — добавить pg в зависимости
+
+Если отсутствует — добавить "pg": "^8.12.0" в dependencies.
+
+Коммит: chore(db): add pg dependency for local Postgres.
+
+Шаг 4. SEO и производительность
+
+4.1. client/index.html — минимальный SEO-базис
+
+Добавить/исправить:
+
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Fire Safety KZ — Пожарная безопасность Казахстана</title>
+    <meta name="description" content="Платформа по пожарной безопасности РК: статьи, документы, калькуляторы, обучение. RU/KZ." />
+    <link rel="canonical" href="/" />
+
+
+Коммит: feat(seo): add base title/description/canonical to index.html.
+
+4.2. <img> — ленивые изображения на ключевых компонентах
+
+В client/src/components/ArticleCard.tsx и client/src/pages/PostPage.tsx добавить loading="lazy" decoding="async" в <img ...>.
+
+Коммит: perf(images): enable lazy loading/async decoding on key images.
+
+Шаг 5. Тестирование
+
+5.1. Vitest каркас
+
+Добавить vitest.config.ts:
+
+import { defineConfig } from 'vitest/config';
+export default defineConfig({
+  test: { environment: 'jsdom', globals: true },
+});
+
+
+Добавить smoke-тест client/src/__tests__/smoke.test.ts:
+
+import { describe, it, expect } from 'vitest';
+describe('smoke', () => {
+  it('works', () => { expect(2 + 2).toBe(4); });
+});
+
+
+В package.json добавить:
+
+devDependencies: vitest, @vitest/ui (актуальные версии).
+
+scripts: "test": "vitest --run".
+
+Коммит: test: add vitest config and smoke test.
+
+Шаг 6. i18n (точечный пример, без тотальной миграции)
+
+6.1. Пример на странице AIAssistant.tsx (НЕ переписывать весь проект):
+
+Добавить импорт useLanguage; заменить несколько жёстких RU-строк на t() с fallback.
+
+Цель — показать паттерн, не ломая текущие тексты.
+
+Коммит: i18n: example t() usage in AIAssistant labels.
+
+Шаг 7. Документация и окружение
+
+7.1. .env.example (новый файл):
+
+NODE_ENV=development
+PORT=5000
+HOST=0.0.0.0
+
+# Database
+DATABASE_URL=
+DATABASE_DRIVER=neon   # neon | pg
+
+# Sessions/Auth
+SESSION_SECRET=change-me-please
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# OpenAI
+OPENAI_API_KEY=
+
+# CORS
+CORS_ORIGINS=
+
+# Replit (по необходимости)
+REPLIT_DOMAINS=
+
+
+Коммит: docs(env): add .env.example with db/ai/cors settings.
+
+Команды проверки (после каждого крупного шага)
+
+Сборка:
+
+npm ci
+npm run build
+
+
+Dev-запуск:
+
+npm run dev
+# Проверить что слушает $PORT (обычно 5000)
+
+
+Тесты:
+
+npm run test
+
+
+Autoscale Deploy (Replit):
+
+Deploy → Autoscale (использует npm run build / npm run start).
+
+После деплоя открыть URL, проверить основные маршруты (/, /sections/:slug, /posts/:slug, /marketplace, /calculators).
+
+Итоговый отчёт (сформировать и приложить)
+
+Executive Summary (5–10 пунктов).
+
+Таблица дефектов (ID / Приоритет / Файл / Описание / Шаги / Первопричина / Решение / Трудоёмкость).
+
+Список применённых коммитов (в хронологии).
+
+Дифы по каждому файлу (unified diff).
+
+Инструкции по запуску/деплою (что изменилось, как проверить).
+
+Рекомендации по дальнейшим улучшениям (Backlog с оценкой отдачи/сложности).
+
+Важно: если какой-то патч потенциально ухудшает поведение (по результатам мысли/проверки) — НЕ ПРИМЕНЯТЬ, зафиксировать в отчёте: «не применено», с обоснованием.
+
+Материалы для агента (готовые шаблоны)
+
+.replit — см. блок «Шаг 1.1».
+
+replit.nix — см. «Шаг 1.2».
+
+.env.example — см. «Шаг 7.1».
+
+Фрагменты для server/index.ts, server/routes.ts, server/db.ts, client/index.html, ArticleCard.tsx, PostPage.tsx, Vitest — см. соответствующие шаги.
+
+Гарантии качества для агента:
+
+Все изменения — минимальные и обратимые.
+
+Применять только после самооценки риска и успешной локальной проверки (build/dev/test).
+
+Не изменять бизнес-логику и пользовательские потоки.
+
+Финал: предоставить отчёт и список коммитов.

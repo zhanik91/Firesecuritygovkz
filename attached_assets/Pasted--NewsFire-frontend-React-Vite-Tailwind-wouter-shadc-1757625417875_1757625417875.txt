@@ -1,0 +1,161 @@
+Контекст и ограничения
+
+Текущий проект: NewsFire (frontend: React + Vite + Tailwind + wouter + shadcn/radix; backend: Node/Express).
+
+Нельзя перезаписывать мои конфиги (package.json, tsconfig, vite.config.ts, postcss.config, tailwind.config.ts) и роутер.
+
+Используем только два входных архива: landwind-main.zip, windmill-react-ui-master.zip.
+
+Из Landwind берём готовые секции (Features, CTA, FAQ) → конвертируем в JSX.
+
+Из Windmill берём только Pagination (через npm или как vendored-компонент).
+
+Все новые тексты — в мою i18n (RU/KZ), без хардкода в JSX.
+
+Шаг 1. Подготовка и распаковка
+
+Создай рабочую ветку git (если git инициализирован):
+
+git checkout -b feature/landing-admin-upgrade || true
+
+
+Создай каталоги:
+
+mkdir -p vendor/landwind vendor/windmill_src \
+         client/src/components/landing \
+         client/public/images/landwind \
+         client/src/vendor/windmill
+
+
+Распакуй архивы:
+
+unzip -o landwind-main.zip -d vendor/landwind
+unzip -o windmill-react-ui-master.zip -d vendor/windmill_src
+
+
+Покажи краткий список содержимого:
+
+ls -la vendor/landwind | head -n 50
+ls -la vendor/windmill_src | head -n 50
+
+Шаг 2. Интеграция секций Landwind в Landing.tsx
+
+Задача: из vendor/landwind/landwind-main/index.html взять секции Features, CTA, FAQ и перевести их в отдельные React-компоненты.
+
+Создай файлы:
+
+client/src/components/landing/FeaturesSection.tsx
+
+client/src/components/landing/CtaSection.tsx
+
+client/src/components/landing/FaqSection.tsx
+
+Сконвертируй HTML в JSX:
+
+class → className, самозакрывающиеся теги (<img />, <input /> и т.п.).
+
+Удали любые сторонние скрипты/инициализации (Flowbite и т.п.).
+
+Пути к ресурсам замени на /images/landwind/....
+
+Перенеси изображения из vendor/landwind/landwind-main/images/* в client/public/images/landwind/ (с сохранением подкаталогов).
+
+Вынеси все тексты секций в i18n:
+
+Добавь ключи в client/src/locales/ru.json и client/src/locales/kz.json, напр.:
+
+landing.features.title, landing.features.items[]
+
+landing.cta.title, landing.cta.subtitle, landing.cta.button
+
+landing.faq.title, landing.faq.items[].q, landing.faq.items[].a
+
+В JSX используй существующий механизм локализации/контекста.
+
+Подключи секции в страницу лендинга:
+
+Найди client/src/pages/Landing.tsx (или актуальный файл лендинга).
+
+Импортируй три секции и вставь ниже текущего Hero, сохранив ваш фирменный вид/цвета.
+
+Tailwind:
+
+Не меняй мои конфиги. Если необходимо, добавь в tailwind.config.ts только путь сканирования:
+
+"client/src/components/landing/**/*.{ts,tsx}"
+
+
+Не перетаскивай tailwind.config.js из Landwind.
+
+Шаг 3. Пагинация в админке (Windmill Pagination)
+
+Вариант 1 — через npm (предпочтительно)
+
+Установи пакет:
+
+npm i @windmill/react-ui
+
+
+Найди подходящую админ-страницу со списком (например, пользователей, новостей, заявок). Имена могут быть вроде:
+client/src/pages/AdminUsersPage.tsx, AdminPostsPage.tsx, AdminItemsPage.tsx и т.п.
+Если их несколько, начни с Users.
+
+Подключи компонент пагинации:
+
+import { Pagination } from '@windmill/react-ui';
+
+
+Внедри <Pagination /> под таблицей/списком (обработчики onChange, пропсы totalResults, resultsPerPage, label), не подключай их ThemeProvider, не меняй мои Button/Input.
+
+Вариант 2 — vendored-файл (если без npm)
+
+Скопируй Pagination.tsx из vendor/windmill_src/windmill-react-ui-master/src/ в:
+
+client/src/vendor/windmill/Pagination.tsx
+
+
+Если компонент требует небольшие утилиты (Transition/типы), подтяни точечно рядом и поправь импорты.
+
+Используй:
+
+import Pagination from '@/vendor/windmill/Pagination';
+
+
+Важно: никаких посторонних провайдеров/тем из Windmill не подключать. Мой UI-стек (shadcn/radix + Tailwind) остаётся основным.
+
+Шаг 4. I18n, сборка и проверка
+
+Проверь, что вся новая текстовка из секций Landwind идёт из i18n (RU/KZ).
+
+Запусти:
+
+npm i
+npm run dev
+
+
+Убедись, что / (Landing) и целевая админ-страница открываются без ошибок в консоли.
+
+Прогони сборку:
+
+npm run build
+
+
+Дай отчёт:
+
+Список добавленных/изменённых файлов.
+
+Краткий отчёт, какие секции вставлены и на какой админ-странице внедрена пагинация.
+
+Подтверди, что package.json, tsconfig, vite.config.ts, tailwind.config.ts не перезаписывались.
+
+Укажи, добавлял ли пакет @windmill/react-ui (или пошёл по vendored-пути).
+
+Критерии приёмки
+
+Главная (/) отрисовывается, новые секции адаптивны (моб./планшет/десктоп), CLS низкий, изображений/путей битых нет.
+
+Новые строки локализованы (RU/KZ).
+
+В админке пагинация работает: корректно переключает страницы, обрабатывает крайние значения.
+
+Роутер wouter и существующие конфиги без изменений.

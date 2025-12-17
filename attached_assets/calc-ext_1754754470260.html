@@ -1,0 +1,40 @@
+<div class="card">
+  <h3>Калькулятор огнетушителей</h3>
+  <div class="grid">
+    <label>Площадь помещения, м²
+      <input type="number" id="ext-area" min="0" step="1" placeholder="например, 250">
+    </label>
+    <label>Категория помещения
+      <select id="ext-cat">
+        <option value="A">А (взрыво-/пожароопасная)</option>
+        <option value="Б">Б (взрыво-/пожароопасная)</option>
+        <option value="В">В (пожароопасная)</option>
+        <option value="Г">Г (умеренная опасность)</option>
+        <option value="Д">Д (пониженная опасность)</option>
+      </select>
+    </label>
+    <label>Этажей
+      <input type="number" id="ext-floors" min="1" step="1" value="1">
+    </label>
+    <label class="check">
+      <input type="checkbox" id="ext-autoput"> Есть АУПТ (спринклер/газ)
+    </label>
+    <label class="check">
+      <input type="checkbox" id="ext-elec"> Есть электрооборудование под напряжением
+    </label>
+  </div>
+  <button class="btn" onclick="calcExtinguishers()">Рассчитать</button>
+
+  <div class="result" id="ext-result"></div>
+
+  <details class="notes">
+    <summary>Нормативные примечания ⓘ</summary>
+    <ul>
+      <li id="ppa3p8">Минимум 2 ОТ на этаж — Прил.3 ППБ.</li>
+      <li id="ppa3p9">Кат. Д ≤ 100 м² — допускается не устанавливать.</li>
+      <li id="ppa3p13">При АУПТ — можно сократить на 50%.</li>
+      <li id="ppa3p14">Макс. расстояния: 20/30/40/70 м.</li>
+      <li id="st1487p85">Резерв при перезарядке — СТ РК 1487, п.8.5.</li>
+    </ul>
+  </details>
+</div>
