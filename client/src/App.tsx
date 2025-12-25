@@ -59,7 +59,6 @@ function Router() {
             <Route path="/" component={Home} />
             <Route path="/dashboard" component={UserDashboard} />
             <Route path="/supplier-dashboard" component={SupplierDashboard} />
-            <Route path="/admin" component={AdminDashboard} />
           </>
         )}
 
