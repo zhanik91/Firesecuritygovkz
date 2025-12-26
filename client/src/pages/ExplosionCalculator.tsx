@@ -524,6 +524,7 @@ export default function ExplosionCalculator() {
                   <Report
                     title="Отчёт по определению категории взрывопожароопасности"
                     subtitle={`Объём помещения: ${roomVolume} м³ | Веществ: ${substances.length} | Категория: ${explosionResult.category}`}
+                    calculatorType="Определение категории взрывопожароопасности"
                     inputs={[
                       { label: "Объём помещения", value: roomVolume, unit: "м³" },
                       { label: "Количество веществ", value: substances.length.toString() },
@@ -559,6 +560,7 @@ export default function ExplosionCalculator() {
                         unit: "МДж/м²"
                       }] : [])
                     ]}
+                    calculations={[]}
                     detailedData={[
                       { name: "Категория", value: explosionResult.category, unit: "", description: "Категория взрывопожароопасности" },
                       { name: "Избыточное давление", value: explosionResult.pressure, unit: "кПа", description: "Максимальное избыточное давление взрыва" },

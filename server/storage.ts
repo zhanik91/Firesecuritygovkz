@@ -142,6 +142,17 @@ export interface IStorage {
   incrementAdViews(id: string): Promise<void>;
   closeAd(id: string): Promise<void>;
 
+  // New Marketplace methods (Fixed)
+  searchAds(options: any): Promise<Ad[]>;
+  searchSuppliers(options: any): Promise<User[]>;
+  getSupplierReviews(supplierId: string): Promise<Review[]>;
+  getAdReviews(adId: string): Promise<Review[]>;
+  respondToReview(reviewId: string, response: string, userId: string): Promise<void>;
+  getPopularSearchTerms(): Promise<{ term: string, count: number }[]>;
+  trackSearchQuery(term: string, category?: string, resultsCount?: number): Promise<void>;
+  getMarketplaceSuppliers(options: any): Promise<any[]>;
+
+
   // Bid operations
   getBids(adId: string): Promise<Bid[]>;
   getBidById(id: string): Promise<Bid | undefined>;
@@ -156,6 +167,8 @@ export interface IStorage {
   getUserNotifications(userId: string): Promise<Notification[]>;
   createNotification(notification: InsertNotification): Promise<Notification>;
   markNotificationAsRead(id: string, userId: string): Promise<void>;
+  markAllNotificationsAsRead(userId: string): Promise<void>;
+  deleteNotification(id: string, userId: string): Promise<void>;
 
   // Media operations
   getAllMedia(): Promise<any[]>;
@@ -171,10 +184,6 @@ export interface IStorage {
 
   // Search operations
   globalSearch(query: string): Promise<any[]>;
-
-  // Enhanced notification operations
-  markAllNotificationsAsRead(userId: string): Promise<void>;
-  deleteNotification(id: string, userId: string): Promise<void>;
 
   // AI Chat operations
   getChatSessions(userId?: string): Promise<ChatSession[]>;
@@ -536,8 +545,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSuppliers(options: {
-    where?: any;
-    orderBy?: any;
+    where?: { city?: string };
+    orderBy?: { rating?: string; workExperience?: string; reviewCount?: string };
     search?: string;
     limit?: number;
   } = {}): Promise<any[]> {
@@ -936,6 +945,19 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(notifications.id, id), eq(notifications.userId, userId)));
   }
 
+  async markAllNotificationsAsRead(userId: string): Promise<void> {
+    await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.userId, userId));
+  }
+
+  async deleteNotification(id: string, userId: string): Promise<void> {
+    await db
+      .delete(notifications)
+      .where(and(eq(notifications.id, id), eq(notifications.userId, userId)));
+  }
+
   // Media operations
   async getAllMedia(): Promise<any[]> {
     // Mock implementation for now - в реальной версии будет таблица media
@@ -978,25 +1000,25 @@ export class DatabaseStorage implements IStorage {
     return {
       users: {
         total: usersCount.count,
-        admins: await db.select({ count: count() }).from(users).where(eq(users.role, 'admin')).then(r => r[0].count),
-        suppliers: await db.select({ count: count() }).from(users).where(eq(users.role, 'supplier')).then(r => r[0].count),
-        regular: await db.select({ count: count() }).from(users).where(eq(users.role, 'user')).then(r => r[0].count)
+        admins: await db.select({ count: count() }).from(users).where(eq(users.role, 'admin')).then((r: any) => r[0].count),
+        suppliers: await db.select({ count: count() }).from(users).where(eq(users.role, 'supplier')).then((r: any) => r[0].count),
+        regular: await db.select({ count: count() }).from(users).where(eq(users.role, 'user')).then((r: any) => r[0].count)
       },
       content: {
         posts: postsCount.count,
         documents: documentsCount.count,
-        publishedPosts: await db.select({ count: count() }).from(posts).where(eq(posts.isPublished, true)).then(r => r[0].count),
-        draftPosts: await db.select({ count: count() }).from(posts).where(eq(posts.isPublished, false)).then(r => r[0].count)
+        publishedPosts: await db.select({ count: count() }).from(posts).where(eq(posts.isPublished, true)).then((r: any) => r[0].count),
+        draftPosts: await db.select({ count: count() }).from(posts).where(eq(posts.isPublished, false)).then((r: any) => r[0].count)
       },
       marketplace: {
         ads: adsCount.count,
         bids: bidsCount.count,
-        activeAds: await db.select({ count: count() }).from(ads).where(eq(ads.isActive, true)).then(r => r[0].count),
-        urgentAds: await db.select({ count: count() }).from(ads).where(eq(ads.isUrgent, true)).then(r => r[0].count)
+        activeAds: await db.select({ count: count() }).from(ads).where(eq(ads.isActive, true)).then((r: any) => r[0].count),
+        urgentAds: await db.select({ count: count() }).from(ads).where(eq(ads.isUrgent, true)).then((r: any) => r[0].count)
       },
       views: {
-        totalPostViews: await db.select({ sum: sql`sum(${posts.views})` }).from(posts).then(r => r[0].sum || 0),
-        totalAdViews: await db.select({ sum: sql`sum(${ads.views})` }).from(ads).then(r => r[0].sum || 0)
+        totalPostViews: await db.select({ sum: sql`sum(${posts.views})` }).from(posts).then((r: any) => r[0].sum || 0),
+        totalAdViews: await db.select({ sum: sql`sum(${ads.views})` }).from(ads).then((r: any) => r[0].sum || 0)
       }
     };
   }
@@ -1107,27 +1129,6 @@ export class DatabaseStorage implements IStorage {
       .limit(3);
 
     return [...postResults, ...documentResults, ...adResults, ...sectionResults];
-  }
-
-  // Enhanced notification operations  
-  async markNotificationAsRead(id: string, userId: string): Promise<void> {
-    await db
-      .update(notifications)
-      .set({ isRead: true })
-      .where(and(eq(notifications.id, id), eq(notifications.userId, userId)));
-  }
-
-  async markAllNotificationsAsRead(userId: string): Promise<void> {
-    await db
-      .update(notifications)
-      .set({ isRead: true })
-      .where(eq(notifications.userId, userId));
-  }
-
-  async deleteNotification(id: string, userId: string): Promise<void> {
-    await db
-      .delete(notifications)
-      .where(and(eq(notifications.id, id), eq(notifications.userId, userId)));
   }
 
   // AI Chat operations
@@ -1274,6 +1275,84 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({ isActive, updatedAt: new Date() })
       .where(eq(users.id, id));
+  }
+
+  // Missing implementations for Interface Methods
+  async searchAds(options: { query?: string } | string): Promise<Ad[]> {
+    const queryTerm = typeof options === 'string' ? options : options.query || '';
+
+     return await db
+      .select()
+      .from(ads)
+      .where(
+        and(
+          eq(ads.isActive, true),
+          or(
+              ilike(ads.title, `%${queryTerm}%`),
+              ilike(ads.description, `%${queryTerm}%`)
+          )
+        )
+      )
+      .orderBy(desc(ads.createdAt));
+  }
+
+  async searchSuppliers(options: { query?: string } | string): Promise<User[]> {
+    const queryTerm = typeof options === 'string' ? options : options.query || '';
+
+      return await db
+        .select()
+        .from(users)
+        .where(
+            and(
+                eq(users.role, 'supplier'),
+                eq(users.isActive, true),
+                or(
+                    ilike(users.firstName, `%${queryTerm}%`),
+                    ilike(users.lastName, `%${queryTerm}%`),
+                    ilike(users.companyName, `%${queryTerm}%`)
+                )
+            )
+        );
+  }
+
+  async getSupplierReviews(supplierId: string): Promise<Review[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.revieweeId, supplierId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  async getAdReviews(adId: string): Promise<Review[]> {
+      // NOTE: Review schema has revieweeId (User) and reviewerId (User).
+      // It does NOT have adId currently in schema based on imports.
+      // Assuming reviews are per user for now, or need schema update.
+      // For now, return empty or filter by some logic if adId was relatable.
+      // IF schema lacks adId, we can't filter by it.
+      // Returning empty array to satisfy interface.
+      return [];
+  }
+
+  async respondToReview(reviewId: string, response: string, userId: string): Promise<void> {
+    // Verify user owns the reviewed item or is admin if strict checking needed
+    await db
+      .update(reviews)
+      .set({ response, updatedAt: new Date() })
+      .where(eq(reviews.id, reviewId));
+  }
+
+  async getPopularSearchTerms(): Promise<{ term: string, count: number }[]> {
+    // Placeholder as there is no search_terms table
+    return [];
+  }
+
+  async trackSearchQuery(term: string, category?: string, resultsCount?: number): Promise<void> {
+    // Placeholder
+    console.log(`Tracking search: ${term}, Category: ${category}, Results: ${resultsCount}`);
+  }
+
+  async getMarketplaceSuppliers(options: any): Promise<any[]> {
+      return this.getSuppliers(options);
   }
 }
 

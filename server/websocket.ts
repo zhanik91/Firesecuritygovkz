@@ -148,7 +148,7 @@ class WebSocketManager {
 
   private pingClients() {
     const now = Date.now();
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (now - client.lastPing > 60000) { // 1 минута без пинга
         client.ws.terminate();
         this.clients.delete(clientId);
@@ -171,7 +171,7 @@ class WebSocketManager {
 
   // Уведомление о новом отклике
   sendNewBidNotification(userId: string, notification: any) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.userId === userId && client.isAuthenticated) {
         this.sendToClient(clientId, {
           type: 'new_bid',
@@ -184,7 +184,7 @@ class WebSocketManager {
 
   // Уведомление о принятии/отклонении отклика
   sendBidStatusNotification(userId: string, notification: any) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.userId === userId && client.isAuthenticated) {
         this.sendToClient(clientId, {
           type: 'bid_status_changed',
@@ -197,7 +197,7 @@ class WebSocketManager {
 
   // Уведомление о новом заказе в категории
   sendNewOrderNotification(categoryId: string, notification: any) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.isAuthenticated) {
         this.sendToClient(clientId, {
           type: 'new_order',
@@ -211,7 +211,7 @@ class WebSocketManager {
 
   // Уведомление о новом сообщении
   sendMessageNotification(userId: string, notification: any) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.userId === userId && client.isAuthenticated) {
         this.sendToClient(clientId, {
           type: 'new_message',
@@ -224,7 +224,7 @@ class WebSocketManager {
 
   // Уведомление о изменении статуса заказа
   sendOrderStatusNotification(userId: string, notification: any) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.userId === userId && client.isAuthenticated) {
         this.sendToClient(clientId, {
           type: 'order_status_changed',
@@ -237,7 +237,7 @@ class WebSocketManager {
 
   // Отправка уведомления конкретному пользователю
   sendUserNotification(userId: string, notification: any) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.userId === userId && client.isAuthenticated) {
         this.sendToClient(clientId, {
           type: 'notification',
@@ -250,7 +250,7 @@ class WebSocketManager {
 
   // Широковещательное уведомление всем авторизованным пользователям
   broadcastNotification(notification: any, excludeUserId?: string) {
-    for (const [clientId, client] of this.clients.entries()) {
+    for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.isAuthenticated && client.userId !== excludeUserId) {
         this.sendToClient(clientId, {
           type: 'broadcast',

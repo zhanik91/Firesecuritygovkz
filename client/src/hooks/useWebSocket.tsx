@@ -55,10 +55,10 @@ export function useWebSocket(): UseWebSocketReturn {
         setReconnectAttempts(0);
 
         // Аутентификация при подключении
-        if (user?.id) {
+        if ((user as any)?.id) {
           sendMessage({
             type: 'auth',
-            userId: user.id
+            userId: (user as any).id
           });
         }
 
@@ -113,7 +113,7 @@ export function useWebSocket(): UseWebSocketReturn {
       setConnectionError('Не удалось создать WebSocket соединение');
       setIsConnecting(false);
     }
-  }, [user?.id, reconnectAttempts]);
+  }, [(user as any)?.id, reconnectAttempts]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {

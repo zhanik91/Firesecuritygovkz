@@ -27,7 +27,7 @@ interface CalcOut {
 }
 
 // ===== Нормы ППБ/СТ РК (внутренние константы) =====
-const AREA_PER_OT: Record<Cat, number> = { A:50, "Б":50, "В":100, "Г":200, "Д":300 }; // м² на 1 ОТ
+const AREA_PER_OT: Record<Cat | string, number> = { A:50, "Б":50, "В":100, "Г":200, "Д":300 }; // м² на 1 ОТ
 const MIN_OT_PER_FLOOR = 2;
 const THRESHOLD_WHEELED = 500; // м²
 const HAS_AUTOPUT_FACTOR = 0.5; // −50% при АУПТ

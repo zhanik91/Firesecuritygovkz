@@ -128,7 +128,7 @@ export default function ExplosionCategoryCalculator() {
       if (quantity <= 0) return;
 
       // Определение категории по температуре вспышки и условиям
-      let substanceCategory: typeof highestRiskCategory = "Д";
+      let substanceCategory: "А" | "Б" | "В1" | "В1а" | "В2" | "В3" | "В4" | "Г1" | "Г2" | "Д" = "Д";
       
       if (flashPoint < -273) {
         // Газы при н.у.
@@ -173,17 +173,17 @@ export default function ExplosionCategoryCalculator() {
     // Корректировка категории в зависимости от дополнительных факторов
     if (!hasVentilation && (hasFlammableGases || hasFlammableLiquids)) {
       // Без вентиляции повышается риск
-      if (highestRiskCategory === "Б") highestRiskCategory = "А";
-      if (highestRiskCategory === "В1") highestRiskCategory = "Б";
+      if ((highestRiskCategory as string) === "Б") highestRiskCategory = "А";
+      if ((highestRiskCategory as string) === "В1") highestRiskCategory = "Б";
     }
 
-    if (!hasIgnitionSources && highestRiskCategory === "А") {
+    if (!hasIgnitionSources && (highestRiskCategory as string) === "А") {
       // Отсутствие источников зажигания может снизить категорию А до Б
       highestRiskCategory = "Б";
     }
 
     // Определение наименования категории и требований
-    const categoryNames: Record<typeof highestRiskCategory, string> = {
+    const categoryNames: Record<string, string> = {
       "А": "Взрывопожароопасная (газы, пары ЛВЖ при н.у.)",
       "Б": "Взрывопожароопасная (горючие пыли, волокна; ЛВЖ при нагреве)",
       "В1": "Взрывопожароопасная (ГЖ при нагреве выше tвсп)",
@@ -196,7 +196,7 @@ export default function ExplosionCategoryCalculator() {
       "Д": "Пониженной пожарной опасности"
     };
 
-    const explosionRiskLevels: Record<typeof highestRiskCategory, "Высокий" | "Средний" | "Низкий" | "Отсутствует"> = {
+    const explosionRiskLevels: Record<string, "Высокий" | "Средний" | "Низкий" | "Отсутствует"> = {
       "А": "Высокий", "Б": "Высокий", "В1": "Средний", "В1а": "Средний", 
       "В2": "Средний", "В3": "Низкий", "В4": "Низкий", 
       "Г1": "Отсутствует", "Г2": "Отсутствует", "Д": "Отсутствует"
@@ -322,7 +322,7 @@ export default function ExplosionCategoryCalculator() {
                     <Checkbox 
                       id="ignition" 
                       checked={hasIgnitionSources}
-                      onCheckedChange={setHasIgnitionSources}
+                      onCheckedChange={(checked: boolean) => setHasIgnitionSources(checked)}
                     />
                     <Label htmlFor="ignition" className="text-sm">
                       Есть источники зажигания
@@ -333,7 +333,7 @@ export default function ExplosionCategoryCalculator() {
                     <Checkbox 
                       id="ventilation" 
                       checked={hasVentilation}
-                      onCheckedChange={setHasVentilation}
+                      onCheckedChange={(checked: boolean) => setHasVentilation(checked)}
                     />
                     <Label htmlFor="ventilation" className="text-sm">
                       Есть принудительная вентиляция
@@ -436,7 +436,7 @@ export default function ExplosionCategoryCalculator() {
                               <Checkbox 
                                 id={`hot-${substance.id}`}
                                 checked={substance.isHot}
-                                onCheckedChange={(checked) => updateSubstance(substance.id, "isHot", checked)}
+                                onCheckedChange={(checked: boolean) => updateSubstance(substance.id, "isHot", checked)}
                               />
                               <Label htmlFor={`hot-${substance.id}`} className="text-xs">
                                 Нагретое
