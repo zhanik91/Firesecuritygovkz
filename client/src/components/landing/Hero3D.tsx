@@ -1,105 +1,76 @@
-import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, ContactShadows, Environment, MeshDistortMaterial, Sphere, Box, Torus, Octahedron } from '@react-three/drei';
-import * as THREE from 'three';
+import { useState, useEffect } from 'react';
 
-function Emblem(props: any) {
-  const meshRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      const t = state.clock.getElapsedTime();
-      meshRef.current.rotation.y = Math.sin(t / 4) / 2;
-      meshRef.current.rotation.z = Math.cos(t / 4) / 4;
-    }
-  });
-
+function StaticHeroVisual() {
   return (
-    <group ref={meshRef} {...props}>
-      {/* Central Shield-like shape composed of geometries */}
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-
-        {/* Core Shield */}
-        <mesh position={[0, 0, 0]}>
-          <octahedronGeometry args={[1.5, 0]} />
-          <meshStandardMaterial color="#F59E0B" roughness={0.2} metalness={0.8} />
-        </mesh>
-
-        {/* Outer Ring */}
-        <Torus args={[2.2, 0.15, 16, 100]} rotation={[Math.PI / 2, 0, 0]}>
-            <meshStandardMaterial color="#2563EB" emissive="#1E40AF" emissiveIntensity={0.5} roughness={0.1} metalness={0.8} />
-        </Torus>
-
-        <Torus args={[2.5, 0.05, 16, 100]} rotation={[Math.PI / 2, 0, 0]}>
-            <meshStandardMaterial color="#ffffff" transparent opacity={0.3} />
-        </Torus>
-
-        {/* Orbiting Particles */}
-        <Sphere args={[0.2, 16, 16]} position={[2, 1, 1]}>
-             <meshStandardMaterial color="#EF4444" emissive="#EF4444" emissiveIntensity={2} />
-        </Sphere>
-        <Sphere args={[0.15, 16, 16]} position={[-2, -1, 1]}>
-             <meshStandardMaterial color="#F59E0B" emissive="#F59E0B" emissiveIntensity={2} />
-        </Sphere>
-         <Sphere args={[0.1, 16, 16]} position={[0, 2, -1]}>
-             <meshStandardMaterial color="#3B82F6" emissive="#3B82F6" emissiveIntensity={2} />
-        </Sphere>
-
-      </Float>
-    </group>
-  );
-}
-
-function Particles({ count = 50 }) {
-  const points = useRef<THREE.Points>(null!);
-
-  // Generate random positions
-  const particlesPosition = React.useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 15;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 15;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-    }
-    return positions;
-  }, [count]);
-
-  useFrame((state) => {
-    if (points.current) {
-        points.current.rotation.y += 0.001;
-        points.current.rotation.x += 0.001;
-    }
-  })
-
-  return (
-    <points ref={points}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particlesPosition.length / 3}
-          array={particlesPosition}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial size={0.05} color="#F59E0B" sizeAttenuation transparent opacity={0.6} />
-    </points>
+    <div className="relative w-full h-full min-h-[400px] flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-amber-900/20" />
+      
+      <div className="relative">
+        <div className="w-48 h-48 md:w-64 md:h-64 relative animate-pulse">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 opacity-20 blur-xl animate-ping" style={{ animationDuration: '3s' }} />
+          
+          <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-2xl">
+            <defs>
+              <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#F59E0B" />
+                <stop offset="100%" stopColor="#D97706" />
+              </linearGradient>
+              <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2563EB" />
+                <stop offset="100%" stopColor="#1D4ED8" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            
+            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#ringGradient)" strokeWidth="4" opacity="0.8" filter="url(#glow)">
+              <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite"/>
+            </circle>
+            
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#ffffff" strokeWidth="1" opacity="0.3">
+              <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="15s" repeatCount="indefinite"/>
+            </circle>
+            
+            <polygon points="100,30 140,75 140,125 100,170 60,125 60,75" fill="url(#shieldGradient)" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+            </polygon>
+            
+            <circle cx="160" cy="50" r="6" fill="#EF4444" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="40" cy="150" r="5" fill="#F59E0B" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="100" cy="15" r="4" fill="#3B82F6" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+      </div>
+      
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-amber-400/40 rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 2}s`
+            }}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
 export default function Hero3D() {
-  return (
-    <div className="w-full h-full min-h-[400px]">
-      <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#2563EB" />
-
-        <Emblem position={[0, 0, 0]} />
-        <Particles />
-
-        <ContactShadows resolution={1024} scale={10} blur={2.5} opacity={0.5} far={10} color="#000000" />
-        <Environment preset="city" />
-      </Canvas>
-    </div>
-  );
+  return <StaticHeroVisual />;
 }
