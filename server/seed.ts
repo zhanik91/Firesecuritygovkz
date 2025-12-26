@@ -74,7 +74,7 @@ async function seedBasicData() {
       slug: "normative-documents", 
       description: "Нормативно-правовые акты по пожарной безопасности",
       icon: "fas fa-file-text",
-      sortOrder: 1,
+      order: 1,
       isActive: true
     });
     
@@ -83,7 +83,7 @@ async function seedBasicData() {
       slug: "educational-materials",
       description: "Обучающие материалы и курсы",
       icon: "fas fa-book",
-      sortOrder: 2,
+      order: 2,
       isActive: true
     });
     
@@ -92,7 +92,7 @@ async function seedBasicData() {
       slug: "news",
       description: "Новости пожарной безопасности",
       icon: "fas fa-newspaper",
-      sortOrder: 3,
+      order: 3,
       isActive: true
     });
     

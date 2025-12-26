@@ -66,7 +66,7 @@ export default function AdminModerationPage() {
     }
   });
 
-  const stats = moderationStats || {
+  const stats = (moderationStats as { pending?: number; approved?: number; rejected?: number; reports?: number }) || {
     pending: 12,
     approved: 45,
     rejected: 8,

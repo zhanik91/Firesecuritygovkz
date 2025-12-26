@@ -3,9 +3,10 @@ import { Link } from 'wouter';
 import { ChevronRight, Home } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
   label: string;
   href?: string;
+  icon?: any; // To allow icon prop in items if needed, though strictly we should update usage or remove icon from usage
 }
 
 interface BreadcrumbsProps {

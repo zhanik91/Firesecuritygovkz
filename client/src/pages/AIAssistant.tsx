@@ -86,18 +86,18 @@ export default function AIAssistant() {
   const { toast } = useToast();
 
   // Get chat sessions
-  const { data: sessions = [], isLoading: sessionsLoading } = useQuery({
+  const { data: sessions = [], isLoading: sessionsLoading } = useQuery<ChatSession[]>({
     queryKey: ['/api/chat/sessions'],
   });
 
   // Get current session messages
-  const { data: messages = [], isLoading: messagesLoading } = useQuery({
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ['/api/chat/messages', currentSessionId],
     enabled: !!currentSessionId,
   });
 
   // Get session documents
-  const { data: documents = [] } = useQuery({
+  const { data: documents = [] } = useQuery<ChatDocument[]>({
     queryKey: ['/api/chat/documents', currentSessionId],
     enabled: !!currentSessionId,
   });
@@ -311,7 +311,7 @@ export default function AIAssistant() {
               Рекомендации:
             </h4>
             <ul className="text-sm space-y-1">
-              {analysis.recommendations.map((rec, idx) => (
+              {analysis.recommendations.map((rec: string, idx: number) => (
                 <li key={idx} className="flex items-start gap-1">
                   <span className="text-green-500 mt-1">•</span>
                   <span>{rec}</span>
@@ -328,7 +328,7 @@ export default function AIAssistant() {
               Выявленные риски:
             </h4>
             <ul className="text-sm space-y-1">
-              {analysis.risks.map((risk, idx) => (
+              {analysis.risks.map((risk: string, idx: number) => (
                 <li key={idx} className="flex items-start gap-1">
                   <span className="text-red-500 mt-1">•</span>
                   <span>{risk}</span>

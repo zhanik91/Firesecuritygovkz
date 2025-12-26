@@ -368,6 +368,7 @@ export default function EvacuationCalculator() {
                   <Report
                     title="Отчёт по расчёту времени эвакуации"
                     subtitle={`Здание: ${buildingParams[buildingType]?.name || 'Не выбрано'} | Людей: ${peopleCount} | Выходов: ${exits.length}`}
+                    calculatorType="Расчёт времени эвакуации"
                     inputs={[
                       { label: "Количество людей", value: peopleCount, unit: "чел" },
                       { label: "Тип здания", value: buildingParams[buildingType]?.name || 'Не выбрано' },
@@ -406,6 +407,12 @@ export default function EvacuationCalculator() {
                         result: evacuationResult.exitTime,
                         unit: "мин"
                       }
+                    ]}
+                    calculations={[
+                      { name: "Время движения", value: evacuationResult.movementTime, unit: "мин", description: "Среднее время движения людей к выходам" },
+                      { name: "Время прохода", value: evacuationResult.exitTime, unit: "мин", description: "Среднее время прохода через выходы" },
+                      { name: "Общая пропускная способность", value: evacuationResult.totalCapacity || 0, unit: "чел/мин", description: "Суммарная пропускная способность всех выходов" },
+                      { name: "Скорость движения", value: buildingParams[buildingType]?.speed || 0, unit: "м/мин", description: "Скорость движения людей для данного типа здания" }
                     ]}
                     detailedData={[
                       { name: "Время движения", value: evacuationResult.movementTime, unit: "мин", description: "Среднее время движения людей к выходам" },

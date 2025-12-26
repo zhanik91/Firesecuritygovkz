@@ -31,7 +31,7 @@ export function useLanguage(): LanguageContextType {
 
     const t = (key: string, defaultValue?: string): string => {
       const keys = key.split('.');
-      let value = translations[language];
+      let value: any = translations[language];
       
       for (const k of keys) {
         if (value && typeof value === 'object' && k in value) {

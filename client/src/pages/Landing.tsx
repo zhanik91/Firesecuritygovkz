@@ -10,14 +10,17 @@ import {
   Users, 
   BookOpen, 
   Award,
-  ChevronRight,
   Play,
   FileText,
   Building,
-  Flame,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Globe
 } from "lucide-react";
+import Hero3D from "@/components/landing/Hero3D";
+import { Suspense } from "react";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -42,128 +45,156 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col font-sans text-slate-900 dark:text-slate-50">
       <SEOHead
         title="Главная"
         description="Fire Safety KZ - ведущий портал по пожарной безопасности в Казахстане. Нормативная база, обучение, маркетплейс."
       />
       <Header />
       
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-kz-blue to-blue-900 text-white py-24 overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-kz-yellow/10 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 -left-24 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl"></div>
-        </div>
+      {/* Hero Section - Split Layout */}
+      <section className="relative pt-32 pb-16 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-        <div className="relative max-w-7xl mx-auto px-4 text-center z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex justify-center mb-8"
-          >
-            <div className="w-24 h-24 bg-gradient-to-br from-kz-yellow to-orange-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-6 transition-transform">
-              <Flame className="w-12 h-12 text-white" />
-            </div>
-          </motion.div>
-          
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight"
-          >
-            Безопасность <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-kz-yellow to-orange-400">
-              превыше всего
-            </span>
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-blue-100 leading-relaxed"
-          >
-            Fire Safety KZ — это единая экосистема для профессионалов пожарной безопасности.
-            Обучение, документы и заказы в одном месте.
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <Button 
-              size="lg" 
-              onClick={handleLogin}
-              className="bg-kz-yellow text-kz-blue hover:bg-white hover:text-kz-blue font-bold px-8 py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1"
+            {/* Left Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="z-10"
             >
-              Начать бесплатно
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-8 py-6 text-lg rounded-xl"
-              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              <Play className="mr-2 w-5 h-5 fill-current" />
-              Как это работает
-            </Button>
-          </motion.div>
-          
-          {/* Demo Accounts */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-16 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 max-w-4xl mx-auto"
-          >
-            <h3 className="text-lg font-medium text-blue-200 mb-6 uppercase tracking-wider text-center">Демонстрационный доступ</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-              {[
-                { role: 'Пользователь', email: 'user@test.kz', color: 'text-kz-yellow', icon: Users },
-                { role: 'Поставщик', email: 'supplier@test.kz', color: 'text-green-400', icon: Building },
-                { role: 'Администратор', email: 'admin@test.kz', color: 'text-red-400', icon: Shield }
-              ].map((acc, i) => (
-                <div key={i} className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors border border-white/5">
-                  <div className={`flex items-center gap-2 font-bold ${acc.color} mb-2`}>
-                    <acc.icon className="w-4 h-4" />
-                    {acc.role}
-                  </div>
-                  <div className="text-sm text-gray-300 font-mono bg-black/20 p-2 rounded mb-1">
-                    {acc.email}
-                  </div>
-                  <div className="text-xs text-gray-400">Пароль: <span className="text-white">123456</span></div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium text-sm mb-6 border border-blue-100 dark:border-blue-800">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Официальный портал безопасности</span>
+              </div>
+
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] mb-6">
+                Пожарная безопасность <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+                  в одном клике
+                </span>
+              </h1>
+
+              <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed max-w-lg">
+                Единая экосистема для обучения, документации и поиска услуг.
+                Всё, что нужно для защиты вашего бизнеса и дома.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  size="lg"
+                  onClick={handleLogin}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 h-14 text-lg rounded-xl shadow-lg shadow-blue-600/20 transition-all hover:scale-105"
+                >
+                  Начать работу
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-14 px-8 text-lg rounded-xl border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
+                  onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <Play className="mr-2 w-4 h-4" />
+                  Демо видео
+                </Button>
+              </div>
+
+              {/* Trust badges */}
+              <div className="mt-10 flex items-center gap-6 text-sm font-medium text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span>ГОСТ РК</span>
                 </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span>Сертифицировано</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span>24/7 Доступ</span>
+                </div>
+              </div>
+            </motion.div>
 
-        {/* Wave separator */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full h-auto text-gray-50 dark:text-gray-900 fill-current">
-            <path fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          </svg>
+            {/* Right Content - 3D Scene */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative h-[500px] w-full lg:h-[600px] flex items-center justify-center"
+            >
+              {/* Decorative gradients */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] dark:bg-blue-500/20"></div>
+
+              <div className="w-full h-full relative z-10">
+                <Suspense fallback={
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                }>
+                   <Hero3D />
+                </Suspense>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 relative">
+      {/* Demo Access Section - Redesigned for Contrast */}
+      <section className="py-12 bg-slate-50 dark:bg-slate-900/50 border-y border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Демонстрационный доступ</h2>
+              <p className="text-slate-500 dark:text-slate-400">Попробуйте платформу в разных ролях без регистрации</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-400 bg-white dark:bg-slate-800 px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700">
+              <Zap className="w-4 h-4 text-yellow-500" />
+              <span>Пароль для всех: 123456</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { role: 'Пользователь', email: 'user@test.kz', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300', icon: Users, desc: 'Доступ к обучению и тестам' },
+              { role: 'Поставщик', email: 'supplier@test.kz', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300', icon: Building, desc: 'Управление услугами и заказами' },
+              { role: 'Администратор', email: 'admin@test.kz', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300', icon: Shield, desc: 'Полный контроль системы' }
+            ].map((acc, i) => (
+              <div key={i} className="group relative bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className={`absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity`}>
+                   <acc.icon className="w-24 h-24" />
+                </div>
+
+                <div className="relative z-10">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-bold mb-4 ${acc.color}`}>
+                    <acc.icon className="w-4 h-4" />
+                    {acc.role}
+                  </div>
+                  <div className="text-lg font-mono text-slate-900 dark:text-slate-200 font-semibold mb-1">
+                    {acc.email}
+                  </div>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {acc.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="features" className="py-24 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <Badge className="mb-4 bg-blue-100 text-blue-700 hover:bg-blue-200 border-none px-4 py-1">Возможности</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
               Всё необходимое в одном месте
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Мы объединили инструменты, знания и специалистов, чтобы сделать пожарную безопасность доступной и понятной.
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+              Инструменты, знания и специалисты, чтобы сделать безопасность доступной и понятной.
             </p>
           </div>
 
@@ -177,23 +208,19 @@ export default function Landing() {
             {[
               { title: 'Нормативная база', icon: FileText, color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-900/20', desc: 'Актуальные ГОСТы, СНиПы и приказы РК' },
               { title: 'Обучение и 3D', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', desc: 'Интерактивные курсы и симуляторы' },
-              { title: 'Маркетплейс', icon: Users, color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20', desc: 'Поиск проверенных поставщиков услуг' },
+              { title: 'Маркетплейс', icon: Globe, color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20', desc: 'Поиск проверенных поставщиков услуг' },
               { title: 'Экспертиза', icon: Award, color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-900/20', desc: 'Консультации и аудит безопасности' },
             ].map((feature, idx) => (
               <motion.div key={idx} variants={item}>
-                <Card className="h-full border-none shadow-lg hover:shadow-xl transition-shadow bg-white dark:bg-gray-800">
-                  <CardHeader className="text-center pb-2">
-                    <div className={`w-20 h-20 ${feature.bg} rounded-2xl flex items-center justify-center mx-auto mb-6 transform transition-transform hover:scale-110 duration-300`}>
-                      <feature.icon className={`w-10 h-10 ${feature.color}`} />
-                    </div>
-                    <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-center text-base">
-                      {feature.desc}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                <div className="h-full p-8 rounded-2xl bg-slate-50 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-slate-200 hover:shadow-xl transition-all duration-300 group">
+                  <div className={`w-16 h-16 ${feature.bg} rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className={`w-8 h-8 ${feature.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -201,19 +228,18 @@ export default function Landing() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-gray-900 text-white py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+      <section className="py-20 border-t border-slate-100 dark:border-slate-900">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center divide-x divide-slate-100 dark:divide-slate-800">
             {[
               { val: '1000+', label: 'Документов' },
               { val: '500+', label: 'Пользователей' },
               { val: '200+', label: 'Поставщиков' },
               { val: '50+', label: 'Городов' }
             ].map((stat, i) => (
-              <div key={i}>
-                <div className="text-5xl font-bold text-kz-yellow mb-2">{stat.val}</div>
-                <div className="text-gray-400 font-medium uppercase tracking-widest text-sm">{stat.label}</div>
+              <div key={i} className="p-4">
+                <div className="text-4xl md:text-5xl font-extrabold text-blue-600 dark:text-blue-500 mb-2">{stat.val}</div>
+                <div className="text-slate-500 font-medium uppercase tracking-widest text-xs">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -221,41 +247,48 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-white dark:bg-gray-900">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <Card className="bg-gradient-to-r from-kz-blue to-blue-800 text-white border-none p-12 rounded-3xl relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-kz-yellow/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
+      <section className="py-24 bg-white dark:bg-gray-950">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="bg-slate-900 dark:bg-slate-900 text-white rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden shadow-2xl">
+            {/* Background effects */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[100px] -mr-32 -mt-32"></div>
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600/20 rounded-full blur-[100px] -ml-32 -mb-32"></div>
 
-            <div className="relative z-10">
-              <Building className="w-20 h-20 text-kz-yellow mx-auto mb-8" />
-
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <div className="relative z-10 text-center">
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
                 Готовы обеспечить безопасность?
               </h2>
 
-              <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+              <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
                 Присоединяйтесь к профессиональному сообществу. Регистрируйтесь сейчас и получите полный доступ к платформе.
               </p>
 
-              <Button
-                size="lg"
-                onClick={handleLogin}
-                className="bg-white text-kz-blue hover:bg-gray-100 font-bold px-12 py-6 text-lg rounded-xl shadow-lg"
-              >
-                Создать аккаунт
-              </Button>
-              <p className="mt-4 text-sm text-blue-200 opacity-80">Это займет не более 2 минут</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  size="lg"
+                  onClick={handleLogin}
+                  className="bg-white text-slate-900 hover:bg-slate-100 font-bold px-12 py-6 text-lg rounded-xl shadow-lg border-2 border-transparent"
+                >
+                  Создать аккаунт
+                </Button>
+                <Button
+                   size="lg"
+                   variant="outline"
+                   className="border-slate-700 text-white hover:bg-slate-800 hover:text-white font-bold px-12 py-6 text-lg rounded-xl bg-transparent"
+                   onClick={() => window.location.href = 'mailto:info@firesafety.kz'}
+                >
+                  Связаться с нами
+                </Button>
+              </div>
+              <p className="mt-6 text-sm text-slate-400 opacity-80">
+                Бесплатная регистрация для всех типов пользователей
+              </p>
             </div>
-          </Card>
+          </div>
         </div>
       </section>
 
       <Footer />
     </div>
   );
-}
-
-function Badge({ children, className }: { children: React.ReactNode, className?: string }) {
-    return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${className}`}>{children}</span>
 }

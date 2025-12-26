@@ -1,7 +1,9 @@
 import type { Express } from "express";
 import { isAuthenticated } from "../replitAuth";
 import { storage } from "../storage";
+import { ads, users } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
+import { db } from "../db";
 
 const requireAdmin = async (req: any, res: any, next: any) => {
   try {
@@ -26,17 +28,17 @@ export function setupModerationRoutes(app: Express) {
   // Получить статистику модерации
   app.get('/api/admin/moderation/stats', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const pendingAds = await storage.db.select()
-        .from(storage.schema.ads)
-        .where(eq(storage.schema.ads.status, 'pending'));
+      const pendingAds = await db.select()
+        .from(ads)
+        .where(eq(ads.moderationStatus, 'pending'));
       
-      const approvedAds = await storage.db.select()
-        .from(storage.schema.ads)
-        .where(eq(storage.schema.ads.status, 'active'));
+      const approvedAds = await db.select()
+        .from(ads)
+        .where(eq(ads.moderationStatus, 'approved'));
       
-      const rejectedAds = await storage.db.select()
-        .from(storage.schema.ads)
-        .where(eq(storage.schema.ads.status, 'rejected'));
+      const rejectedAds = await db.select()
+        .from(ads)
+        .where(eq(ads.moderationStatus, 'rejected'));
 
       const stats = {
         pending: pendingAds.length,
@@ -55,24 +57,24 @@ export function setupModerationRoutes(app: Express) {
   // Получить объявления на модерации
   app.get('/api/admin/ads/pending', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const pendingAds = await storage.db.select({
-        id: storage.schema.ads.id,
-        title: storage.schema.ads.title,
-        description: storage.schema.ads.description,
-        category: storage.schema.ads.category,
-        createdAt: storage.schema.ads.createdAt,
-        status: storage.schema.ads.status,
-        userId: storage.schema.ads.userId,
-        companyName: storage.schema.users.companyName,
-        firstName: storage.schema.users.firstName,
-        lastName: storage.schema.users.lastName
+      const pendingAds = await db.select({
+        id: ads.id,
+        title: ads.title,
+        description: ads.description,
+        categoryId: ads.categoryId,
+        createdAt: ads.createdAt,
+        status: ads.status,
+        userId: ads.userId,
+        companyName: users.companyName,
+        firstName: users.firstName,
+        lastName: users.lastName
       })
-      .from(storage.schema.ads)
-      .leftJoin(storage.schema.users, eq(storage.schema.ads.userId, storage.schema.users.id))
-      .where(eq(storage.schema.ads.status, 'pending'))
-      .orderBy(desc(storage.schema.ads.createdAt));
+      .from(ads)
+      .leftJoin(users, eq(ads.userId, users.id))
+      .where(eq(ads.moderationStatus, 'pending'))
+      .orderBy(desc(ads.createdAt));
 
-      const adsWithAuthor = pendingAds.map(ad => ({
+      const adsWithAuthor = pendingAds.map((ad: any) => ({
         ...ad,
         author: ad.companyName || `${ad.firstName} ${ad.lastName}`
       }));
@@ -90,26 +92,20 @@ export function setupModerationRoutes(app: Express) {
       const adId = req.params.id;
       
       // Обновить статус объявления
-      await storage.db.update(storage.schema.ads)
-        .set({ 
-          status: 'active'
-        })
-        .where(eq(storage.schema.ads.id, adId));
+      await storage.approveAd(adId, req.adminUser.id);
 
       // Получить информацию об объявлении для уведомления
-      const ad = await storage.db.select()
-        .from(storage.schema.ads)
-        .where(eq(storage.schema.ads.id, adId))
-        .limit(1);
+      const ad = await storage.getAdById(adId);
 
-      if (ad.length > 0) {
+      if (ad) {
         // Создать уведомление автору
         await storage.createNotification({
-          userId: ad[0].userId,
+          userId: ad.userId,
           title: "Объявление одобрено",
-          message: `Ваше объявление "${ad[0].title}" прошло модерацию и опубликовано.`,
+          message: `Ваше объявление "${ad.title}" прошло модерацию и опубликовано.`,
           type: "success",
-          linkUrl: `/marketplace/ads/${ad[0].slug}`
+          linkUrl: `/marketplace/ads/${ad.slug}`,
+          isRead: false
         });
       }
 
@@ -127,26 +123,20 @@ export function setupModerationRoutes(app: Express) {
       const { reason } = req.body;
       
       // Обновить статус объявления
-      await storage.db.update(storage.schema.ads)
-        .set({ 
-          status: 'rejected'
-        })
-        .where(eq(storage.schema.ads.id, adId));
+      await storage.rejectAd(adId, req.adminUser.id, reason);
 
       // Получить информацию об объявлении для уведомления
-      const ad = await storage.db.select()
-        .from(storage.schema.ads)
-        .where(eq(storage.schema.ads.id, adId))
-        .limit(1);
+      const ad = await storage.getAdById(adId);
 
-      if (ad.length > 0) {
+      if (ad) {
         // Создать уведомление автору
         await storage.createNotification({
-          userId: ad[0].userId,
+          userId: ad.userId,
           title: "Объявление отклонено",
-          message: `Ваше объявление "${ad[0].title}" отклонено модератором. Причина: ${reason}`,
+          message: `Ваше объявление "${ad.title}" отклонено модератором. Причина: ${reason}`,
           type: "warning",
-          linkUrl: `/marketplace/create`
+          linkUrl: `/marketplace/create`,
+          isRead: false
         });
       }
 

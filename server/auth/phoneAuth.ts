@@ -150,7 +150,7 @@ export function isValidPhoneNumber(phone: string): boolean {
 // Очистка истекших кодов (запускать периодически)
 export function cleanupExpiredCodes(): void {
   const now = new Date();
-  for (const [phone, codeData] of verificationCodes.entries()) {
+  for (const [phone, codeData] of Array.from(verificationCodes.entries())) {
     if (codeData.expiresAt < now) {
       verificationCodes.delete(phone);
     }

@@ -59,6 +59,8 @@ interface ReportProps {
   recommendations?: string[];
   notes?: string[];
   className?: string;
+  subtitle?: string;
+  detailedData?: ReportCalculation[];
 }
 
 export function Report({
@@ -76,7 +78,9 @@ export function Report({
   qrCodeUrl,
   recommendations,
   notes,
-  className = ''
+  className = '',
+  subtitle,
+  detailedData
 }: ReportProps) {
   
   const printReport = () => {
@@ -115,7 +119,12 @@ export function Report({
           <CardTitle className="text-2xl font-bold print:text-xl">
             {title}
           </CardTitle>
-          <div className="text-lg text-muted-foreground print:text-base">
+          {subtitle && (
+            <div className="text-lg font-medium text-gray-600 print:text-base mt-2">
+              {subtitle}
+            </div>
+          )}
+          <div className="text-lg text-muted-foreground print:text-base mt-1">
             Расчёт: {calculatorType}
           </div>
           <div className="flex justify-between text-sm text-muted-foreground mt-4 print:text-xs">
@@ -196,6 +205,32 @@ export function Report({
                   </div>
                   <span className="font-bold">
                     {calc.value} {calc.unit || ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Подробные данные */}
+      {detailedData && detailedData.length > 0 && (
+        <Card className="mb-6 page-break-avoid">
+          <CardHeader>
+            <CardTitle className="text-xl">3.1. Подробные данные</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {detailedData.map((data, index) => (
+                <div key={index} className="flex justify-between items-center p-3 border rounded">
+                  <div>
+                    <span className="font-medium">{data.name}</span>
+                    {data.description && (
+                      <div className="text-sm text-muted-foreground">{data.description}</div>
+                    )}
+                  </div>
+                  <span className="font-bold">
+                    {data.value} {data.unit || ''}
                   </span>
                 </div>
               ))}

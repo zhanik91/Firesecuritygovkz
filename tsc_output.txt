@@ -1,0 +1,113 @@
+client/src/components/AdminRoleChecker.tsx(40,42): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/AdminRoleChecker.tsx(41,45): error TS2339: Property 'email' does not exist on type '{}'.
+client/src/components/AdminRoleChecker.tsx(43,43): error TS2339: Property 'firstName' does not exist on type '{}'.
+client/src/components/AdminRoleChecker.tsx(43,61): error TS2339: Property 'lastName' does not exist on type '{}'.
+client/src/components/AdvancedSearchNew.tsx(261,18): error TS18046: 'categories' is of type 'unknown'.
+client/src/components/AdvancedSearchNew.tsx(577,33): error TS18046: 'categories' is of type 'unknown'.
+client/src/components/AuthButton.tsx(36,25): error TS2339: Property 'firstName' does not exist on type '{}'.
+client/src/components/AuthButton.tsx(36,43): error TS2339: Property 'email' does not exist on type '{}'.
+client/src/components/AuthButton.tsx(36,57): error TS2339: Property 'phone' does not exist on type '{}'.
+client/src/components/BidSubmissionForm.tsx(88,21): error TS2339: Property 'role' does not exist on type '{}'.
+client/src/components/NotificationCenter.tsx(19,44): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/NotificationCenter.tsx(20,22): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/NotificationSystem.tsx(59,23): error TS18046: 'notifications' is of type 'unknown'.
+client/src/components/NotificationSystem.tsx(122,19): error TS18046: 'notifications' is of type 'unknown'.
+client/src/components/NotificationSystem.tsx(128,20): error TS18046: 'notifications' is of type 'unknown'.
+client/src/components/NotificationSystem.tsx(178,32): error TS18046: 'notifications' is of type 'unknown'.
+client/src/components/PWAFeatures.tsx(317,25): error TS2367: This comparison appears to be unintentional because the types '"default" | "granted"' and '"denied"' have no overlap.
+client/src/components/PerformanceOptimized.tsx(4,26): error TS1149: File name '/app/client/src/components/ui/skeleton.tsx' differs from already included file name '/app/client/src/components/ui/Skeleton.tsx' only in casing.
+  The file is in the program because:
+    Imported via '@/components/ui/Skeleton' from file '/app/client/src/pages/MarketplacePage.tsx'
+    Matched by include pattern 'client/src/**/*' in '/app/tsconfig.json'
+    Imported via '@/components/ui/skeleton' from file '/app/client/src/components/PerformanceOptimized.tsx'
+client/src/components/PerformanceOptimized.tsx(17,41): error TS2307: Cannot find module '@/components/AdDetailModal' or its corresponding type declarations.
+client/src/components/UserProfileDashboard.tsx(35,38): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/UserProfileDashboard.tsx(36,22): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/UserProfileDashboard.tsx(40,44): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/UserProfileDashboard.tsx(41,22): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/UserProfileDashboard.tsx(45,47): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/UserProfileDashboard.tsx(46,22): error TS2339: Property 'id' does not exist on type '{}'.
+client/src/components/YouDoMarketplace.tsx(335,11): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+client/src/components/YouDoMarketplace.tsx(489,15): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+client/src/components/games/3D/Fire3DGame.tsx(263,9): error TS7034: Variable 'closestFire' implicitly has type 'any' in some locations where its type cannot be determined.
+client/src/components/games/3D/Fire3DGame.tsx(276,52): error TS2339: Property 'group' does not exist on type 'never'.
+client/src/components/games/3D/Fire3DGame.tsx(286,47): error TS7005: Variable 'closestFire' implicitly has an 'any' type.
+client/src/components/games/3D/FirePhysicsEngine.tsx(6,11): error TS2564: Property 'scene' has no initializer and is not definitely assigned in the constructor.
+client/src/components/games/3D/FirePhysicsEngine.tsx(7,11): error TS2564: Property 'renderer' has no initializer and is not definitely assigned in the constructor.
+client/src/components/games/3D/FirePhysicsEngine.tsx(8,11): error TS2564: Property 'camera' has no initializer and is not definitely assigned in the constructor.
+client/src/components/games/3D/FirePhysicsEngine.tsx(9,11): error TS2564: Property 'world' has no initializer and is not definitely assigned in the constructor.
+client/src/components/gamification/GameSession.tsx(43,66): error TS2345: Argument of type '{ method: string; body: string; headers: { 'Content-Type': string; }; }' is not assignable to parameter of type 'string'.
+client/src/components/gamification/GameSession.tsx(50,25): error TS2339: Property 'id' does not exist on type 'Response'.
+client/src/components/gamification/GameSession.tsx(54,29): error TS2339: Property 'id' does not exist on type 'Response'.
+client/src/components/gamification/GameSession.tsx(67,82): error TS2345: Argument of type '{ method: string; body: string; headers: { 'Content-Type': string; }; }' is not assignable to parameter of type 'string'.
+client/src/components/gamification/PlayerProfile.tsx(64,29): error TS2339: Property 'level' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(64,53): error TS2339: Property 'xp' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(65,37): error TS2339: Property 'xp' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(74,41): error TS2339: Property 'avatar' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(76,26): error TS2339: Property 'name' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(80,56): error TS2339: Property 'name' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(82,26): error TS2339: Property 'title' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(82,52): error TS2339: Property 'level' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(85,26): error TS2339: Property 'xp' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(93,48): error TS2339: Property 'level' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(106,58): error TS2339: Property 'totalGamesPlayed' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(114,58): error TS2339: Property 'totalFiresExtinguished' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(122,69): error TS2339: Property 'averageAccuracy' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(130,58): error TS2339: Property 'currentStreak' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(144,31): error TS2339: Property 'achievements' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(149,22): error TS2339: Property 'achievements' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(149,52): error TS7006: Parameter 'achievement' implicitly has an 'any' type.
+client/src/components/gamification/PlayerProfile.tsx(149,65): error TS7006: Parameter 'index' implicitly has an 'any' type.
+client/src/components/gamification/PlayerProfile.tsx(154,22): error TS2339: Property 'achievements' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(156,27): error TS2339: Property 'achievements' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(164,15): error TS2339: Property 'recentSessions' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(164,39): error TS2339: Property 'recentSessions' does not exist on type '{}'.
+client/src/components/gamification/PlayerProfile.tsx(174,22): error TS2339: Property 'recentSessions' does not exist on type '{}'.
+client/src/pages/AIAssistant.tsx(219,21): error TS2554: Expected 1-2 arguments, but got 0.
+client/src/pages/AIAssistant.tsx(376,50): error TS2554: Expected 1-2 arguments, but got 0.
+client/src/pages/EvacuationCalculator.tsx(81,20): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/EvacuationCalculator.tsx(187,9): error TS2322: Type '{ title: string; description: string; keywords: string; canonical: string | undefined; schema: { "@context": string; "@type": string; name: string; description: string; applicationCategory: string; operatingSystem: string; offers: { ...; }; }; }' is not assignable to type 'IntrinsicAttributes & SEOHeadProps'.
+  Property 'schema' does not exist on type 'IntrinsicAttributes & SEOHeadProps'.
+client/src/pages/EvacuationCalculator.tsx(208,68): error TS2304: Cannot find name 'Shield'.
+client/src/pages/EvacuationCalculator.tsx(370,42): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/EvacuationCalculator.tsx(374,53): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/EvacuationCalculator.tsx(392,119): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/EvacuationCalculator.tsx(399,114): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/EvacuationCalculator.tsx(415,59): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/EvacuationCalculator.tsx(421,59): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+  No index signature with a parameter of type 'string' was found on type '{ office: { throughput: number; speed: number; name: string; maxDistance: number; }; retail: { throughput: number; speed: number; name: string; maxDistance: number; }; warehouse: { throughput: number; speed: number; name: string; maxDistance: number; }; industrial: { ...; }; residential: { ...; }; educational: { ......'.
+client/src/pages/ExplosionCalculator.tsx(366,9): error TS2322: Type '{ title: string; description: string; keywords: string; canonical: string | undefined; schema: { "@context": string; "@type": string; name: string; description: string; applicationCategory: string; operatingSystem: string; offers: { ...; }; }; }' is not assignable to type 'IntrinsicAttributes & SEOHeadProps'.
+  Property 'schema' does not exist on type 'IntrinsicAttributes & SEOHeadProps'.
+client/src/pages/FireExtinguisherCalculator.tsx(150,9): error TS2322: Type '{ title: string; description: string; keywords: string; canonical: string | undefined; schema: { "@context": string; "@type": string; name: string; description: string; applicationCategory: string; operatingSystem: string; offers: { ...; }; }; }' is not assignable to type 'IntrinsicAttributes & SEOHeadProps'.
+  Property 'schema' does not exist on type 'IntrinsicAttributes & SEOHeadProps'.
+client/src/pages/SubsectionPage.tsx(95,50): error TS2339: Property 'subsectionId' does not exist on type 'Post'.
+client/src/pages/SubsectionPage.tsx(101,48): error TS2339: Property 'subsectionId' does not exist on type 'Document'.
+client/src/pages/SubsectionPage.tsx(107,52): error TS2339: Property 'subsectionId' does not exist on type 'PhotoAlbum'.
+client/src/pages/SubsectionPage.tsx(113,52): error TS2339: Property 'subsectionId' does not exist on type 'Video'.
+client/src/pages/SubsectionPage.tsx(119,50): error TS2339: Property 'subsectionId' does not exist on type 'PresentationItem'.
+server/auth/strategies.ts(68,13): error TS7006: Parameter 'accessToken' implicitly has an 'any' type.
+server/auth/strategies.ts(68,26): error TS7006: Parameter 'refreshToken' implicitly has an 'any' type.
+server/auth/strategies.ts(68,40): error TS7006: Parameter 'profile' implicitly has an 'any' type.
+server/auth/strategies.ts(68,49): error TS7006: Parameter 'done' implicitly has an 'any' type.
+server/routes.ts(862,21): error TS2554: Expected 2 arguments, but got 1.
+server/routes.ts(1115,21): error TS2554: Expected 2 arguments, but got 1.
+server/storage.ts(577,31): error TS7006: Parameter 'supplier' implicitly has an 'any' type.
+server/storage.ts(578,54): error TS18048: 'options.search' is possibly 'undefined'.
+server/storage.ts(579,53): error TS18048: 'options.search' is possibly 'undefined'.
+server/storage.ts(580,56): error TS18048: 'options.search' is possibly 'undefined'.
+server/storage.ts(582,41): error TS18048: 'options.search' is possibly 'undefined'.
+server/websocket.ts(21,22): error TS7006: Parameter 'info' implicitly has an 'any' type.
+server/websocket.ts(151,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(174,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(187,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(200,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(214,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(227,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(240,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/websocket.ts(253,38): error TS2802: Type 'MapIterator<[string, WebSocketClient]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
